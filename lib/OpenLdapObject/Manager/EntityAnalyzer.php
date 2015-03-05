@@ -20,7 +20,11 @@ class EntityAnalyzer {
 
     private $reflection;
     private $annotationReader;
+
+    // Caching method's Result
     private $listColumns;
+    private $listRequiredMethod;
+    private $listMissingMethod;
 
     private static $ColumnAnnotation = 'OpenLdapObject\Annotations\Column';
     private static $IndexAnnotation = 'OpenLdapObject\Annotations\Index';
@@ -88,7 +92,13 @@ class EntityAnalyzer {
         return array('dn' => $annotation->value);
     }
 
+    /**
+     * Get the list of require method
+     * @return array
+     */
     public function listRequiredMethod() {
+        if(!is_null($this->listRequiredMethod)) return $this->listRequiredMethod;
+
         $columns = $this->listColumns();
         $methodList = array();
 
@@ -105,7 +115,29 @@ class EntityAnalyzer {
             }
         }
 
+        $this->listRequiredMethod = $methodList;
+
         return $methodList;
+    }
+
+    /**
+     * Get the list of missing require method
+     */
+    public function listMissingMethod() {
+        if(!is_null($this->listMissingMethod)) return $this->listMissingMethod;
+
+        $required = $this->listRequiredMethod();
+        $missing = array();
+
+        foreach($required as $methodName) {
+            if(!$this->reflection->hasMethod($methodName)) {
+                $missing[] = $methodName;
+            }
+        }
+
+        $this->listMissingMethod = $missing;
+
+        return $missing;
     }
 
     /**

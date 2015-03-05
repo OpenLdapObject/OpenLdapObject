@@ -66,4 +66,22 @@ class EntityAnalyzerTest extends \PHPUnit_Framework_TestCase {
             'removeTelephoneNumber'
         ));
     }
+
+    public function testListMissingMethod() {
+        $this->assertEquals($this->entityAnalyzer->listMissingMethod(), array(
+            'getUid',
+            'setUid',
+            'getCn',
+            'setCn',
+            'getSn',
+            'setSn',
+            'getGivenName',
+            'setGivenName',
+            'getMail',
+            'setMail',
+            'getTelephoneNumber',
+            'addTelephoneNumber',
+            'removeTelephoneNumber'
+        ));
+    }
 }
