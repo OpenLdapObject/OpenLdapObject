@@ -68,7 +68,8 @@ class EntityManager {
         }
     }
 
-    public function flush() {
+    public function flush(array $param = array()) {
+        $this->flusher->setParam($param);
         foreach($this->toPersistEntity as $entity) {
             $repository = $this->getRepository(get_class($entity));
             $this->flusher->flushEntity($entity, $repository->getHydrater(), $repository->getAnalyzer());

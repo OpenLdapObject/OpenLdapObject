@@ -5,6 +5,7 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use OpenLdapObject\Annotations\Annotation;
 use OpenLdapObject\Annotations\AnnotationManager;
 use OpenLdapObject\Annotations\InvalidAnnotationException;
+use OpenLdapObject\Exception\InvalidEntityException;
 use OpenLdapObject\Utils;
 
 /**
@@ -27,11 +28,13 @@ class EntityAnalyzer {
     private $listColumns;
     private $listRequiredMethod;
     private $listMissingMethod;
+    private $classAnnotation;
     private $index;
 
     private static $ColumnAnnotation = 'OpenLdapObject\Annotations\Column';
     private static $IndexAnnotation = 'OpenLdapObject\Annotations\Index';
     private static $dnAnnotation = 'OpenLdapObject\Annotations\Dn';
+    private static $entityAnnotation = 'OpenLdapObject\Annotations\Entity';
 
     public function __construct($className) {
         $this->className = $className;
@@ -105,14 +108,29 @@ class EntityAnalyzer {
     }
 
     public function getClassAnnotation() {
+        if(!is_null($this->classAnnotation)) return $this->classAnnotation;
+
         $annotation = $this->annotationReader->getClassAnnotation($this->reflection, self::$dnAnnotation);
         $annotation->check();
 
-        return array('dn' => $annotation->value);
+        $this->classAnnotation = array('dn' => $annotation->value);
+
+        $annotation = $this->annotationReader->getClassAnnotation($this->reflection, self::$entityAnnotation);
+        if(is_null($annotation)) {
+            throw new InvalidEntityException($this->className . ' have no ' . self::$entityAnnotation . ' annotation');
+        }
+        $annotation->check();
+        $this->classAnnotation['objectclass'] = $annotation->objectclass;
+
+        return $this->classAnnotation;
     }
 
     public function getBaseDn() {
         return $this->getClassAnnotation()['dn'];
+    }
+
+    public function getObjectclass() {
+        return $this->getClassAnnotation()['objectclass'];
     }
 
     /**

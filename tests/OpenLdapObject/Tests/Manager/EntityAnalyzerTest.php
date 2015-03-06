@@ -44,7 +44,8 @@ class EntityAnalyzerTest extends \PHPUnit_Framework_TestCase {
 
     public function testGetClassAnnotation() {
         $this->assertEquals($this->entityAnalyzer->getClassAnnotation(), array(
-                'dn' => 'ou=people'
+                'dn' => 'ou=people',
+                'objectclass' => array('inetOrgPerson', 'organizationalPerson', 'person', 'top')
             )
         );
     }

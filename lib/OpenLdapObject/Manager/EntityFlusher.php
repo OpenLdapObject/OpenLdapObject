@@ -8,13 +8,26 @@ use OpenLdapObject\Exception\InflushableException;
 use OpenLdapObject\Manager\Hydrate\Hydrater;
 
 class EntityFlusher {
+    const CREATE = 0, REPLACE = 1, DELETE = 2;
     /**
      * @var EntityManager
      */
     private $em;
+    private $param = array();
 
     public function __construct(EntityManager $em) {
         $this->em = $em;
+    }
+
+    public function setParam(array $param) {
+        $keys = array(EntityFlusher::CREATE, EntityFlusher::REPLACE, EntityFlusher::DELETE);
+        foreach($keys as $key) {
+            if(!array_key_exists($key, $param)) {
+                $this->param[$key] = true;
+            } else {
+                $this->param[$key] = $param[$key];
+            }
+        }
     }
 
     /**
@@ -42,7 +55,11 @@ class EntityFlusher {
 
         $dn = $entity->_getDn();
         if(is_null($dn)) {
-            $this->create($entity, $currentData, $diff, $analyzer);
+            if($this->param[EntityFlusher::CREATE]) {
+                $this->create($entity, $currentData, $diff, $analyzer);
+            } else {
+                throw new InflushableException('Unable to create entity, Param::Create is false');
+            }
         }
         //var_dump($diff);
     }
@@ -77,6 +94,8 @@ class EntityFlusher {
             $dnPiece[] = $this->em->getClient()->getBaseDn();
         }
         $dn = implode(',', $dnPiece);
+
+        $diff['objectclass'] = $analyzer->getObjectclass();
 
         $this->em->getClient()->create($dn, $diff);
     }

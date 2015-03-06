@@ -7,6 +7,7 @@ use OpenLdapObject\Entity;
 
 /**
  * @OLO\Dn(value="ou=people")
+ * @OLO\Entity({"inetOrgPerson", "organizationalPerson", "person", "top"})
  */
 class PeopleTest extends Entity {
     /**

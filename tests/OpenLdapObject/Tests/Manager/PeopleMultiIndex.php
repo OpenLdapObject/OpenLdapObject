@@ -7,6 +7,7 @@ use OpenLdapObject\Entity;
 
 /**
  * @OLO\Dn(ou="people")
+ * @OLO\Entity({"inetOrgPerson", "organizationalPerson", "person", "top"})
  */
 class PeopleMultiIndex extends Entity {
     /**
