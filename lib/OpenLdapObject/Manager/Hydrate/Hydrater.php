@@ -24,19 +24,25 @@ class Hydrater {
      */
     public function hydrate(array $data) {
         $entity = new $this->className();
-        $column = $this->analyzer->listColumns();
+        // To fix a bug: Ldap column name is always to lower case
+        $column = array();
+        foreach($this->analyzer->listColumns() as $name => $info) {
+            $column[strtolower($name)] = array_merge($info, array('realname' => $name));
+        }
 
         foreach($data as $key => $value) {
-            if(!array_key_exists($key, $column)) {
+            $keyLow = strtolower($key);
+
+            if(!array_key_exists($keyLow, $column)) {
                 continue;
             }
 
-            if(is_array($value) && $column[$key]['type'] !== 'array') {
+            if(is_array($value) && $column[$keyLow]['type'] !== 'array') {
                 throw new InvalidHydrateException('Column ' . $key . ' define as a string but data is array');
             }
 
-            if($column[$key]['type'] === 'array') {
-                $method = 'add' . Utils::capitalize($key);
+            if($column[$keyLow]['type'] === 'array') {
+                $method = 'add' . Utils::capitalize($column[$keyLow]['realname']);
                 if(is_array($data)) {
                     foreach($value as $e) {
                         $entity->$method($e);
@@ -45,7 +51,7 @@ class Hydrater {
                     $entity->$method($value);
                 }
             } else {
-                $method = 'set' . Utils::capitalize($key);
+                $method = 'set' . Utils::capitalize($column[$keyLow]['realname']);
                 $entity->$method($value);
             }
         }

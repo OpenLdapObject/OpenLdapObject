@@ -35,11 +35,15 @@ class Client {
                 $baseDn = $this->baseDn;
             }
         }
-
-        return ldap_get_entries($this->connect, ldap_search($this->connect, $baseDn, $filter, $attributes, 0, $limit));
+        $result = @ldap_search($this->connect, $baseDn, $filter, $attributes, 0, $limit);
+        if(!$result) {
+            var_dump(ldap_error($this->connect));
+            return null;
+        }
+        return ldap_get_entries($this->connect, $result);
     }
 
-    public function cleanResult($input) {
+    public static function cleanResult($input) {
         $output = array();
         for($nbEntry = 0; $nbEntry < $input['count']; $nbEntry++) {
             $entry = array();

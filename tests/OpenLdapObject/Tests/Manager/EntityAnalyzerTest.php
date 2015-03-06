@@ -49,6 +49,10 @@ class EntityAnalyzerTest extends \PHPUnit_Framework_TestCase {
         );
     }
 
+    public function testGetBaseDn() {
+        $this->assertEquals($this->entityAnalyzer->getBaseDn(), 'ou=people');
+    }
+
     public function testListRequiredMethod() {
         $this->assertEquals($this->entityAnalyzer->listRequiredMethod(), array(
             'getUid' => array('type' => EntityAnalyzer::GETTER, 'column' => 'uid'),

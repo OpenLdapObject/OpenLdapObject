@@ -94,6 +94,10 @@ class EntityAnalyzer {
         return array('dn' => $annotation->value);
     }
 
+    public function getBaseDn() {
+        return $this->getClassAnnotation()['dn'];
+    }
+
     /**
      * Get the list of require method
      * @return array
