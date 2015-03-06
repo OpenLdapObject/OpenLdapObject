@@ -35,7 +35,7 @@ class EntityBuilder {
         $endClassPos = strrpos($lineToSet, '}');
 
         $before = substr($lineToSet, 0, $endClassPos-2);
-        $after = substr($lineToSet, 0, $endClassPos-1);
+        $after = substr($lineToSet, $endClassPos-1);
 
         foreach($missingMethod as $data) {
             switch($data['type']) {
