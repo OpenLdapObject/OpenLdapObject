@@ -3,11 +3,12 @@
 namespace OpenLdapObject\Tests\Manager;
 
 use OpenLdapObject\Annotations as OLO;
+use OpenLdapObject\Entity;
 
 /**
  * @OLO\Dn(ou="people")
  */
-class PeopleMultiIndex {
+class PeopleMultiIndex extends Entity {
     /**
      * @OLO\Column(type="string")
      * @OLO\Index

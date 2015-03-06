@@ -23,7 +23,11 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
         $connect->identify(LDAP_USER, LDAP_PASSWORD);
         $client = $connect->connect();
         $client->setBaseDn(LDAP_BASE_DN);
-        EntityManager::addEntityManager('default', $client);
+        try {
+            EntityManager::addEntityManager('default', $client);
+        } catch(\InvalidArgumentException $e) {
+
+        }
         $this->em = EntityManager::getEntityManager();
     }
 
@@ -40,6 +44,32 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($people->getGivenName(), 'Pierre');
         $this->assertEquals($people->getMail(), 'pierre.deparis@example.com');
         $this->assertEquals($people->getTelephoneNumber(), array('03 00 00 00 01', '04 00 00 00 01'));
+    }
+
+    public function testFlush() {
+        $people = $this->em->getRepository('\OpenLdapObject\Tests\Manager\People')->findOneBy(array('uid' => 'pdeparis'));
+
+        $this->assertEquals($people->getUid(), 'pdeparis');
+        $this->assertEquals($people->getSn(), 'Deparis');
+        $this->assertEquals($people->getCn(), 'Pierre Deparis');
+        $this->assertEquals($people->getGivenName(), 'Pierre');
+        $this->assertEquals($people->getMail(), 'pierre.deparis@example.com');
+        $this->assertEquals($people->getTelephoneNumber(), array('03 00 00 00 01', '04 00 00 00 01'));
+
+        $people->setMail('pierre.deparis@pers.example.com');
+
+        $newPeople = new People();
+        $newPeople
+            ->setUid('mdubois')
+            ->setCn('Maurice Dubois')
+            ->setSn('Dubois')
+            ->setGivenName('Maurice')
+            ->setMail('maurice.dubois@example.com')
+            ->addTelephoneNumber('03 00 00 00 02');
+
+        $this->em->persist($people);
+        $this->em->persist($newPeople);
+        $this->em->flush();
     }
 }
  

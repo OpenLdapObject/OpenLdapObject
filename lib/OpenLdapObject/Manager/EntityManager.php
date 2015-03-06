@@ -8,8 +8,10 @@ use OpenLdapObject\LdapClient\Client;
 class EntityManager {
     private static $availableManager = array();
     private $client;
+    private $flusher;
     private $repository = array();
-    private $knowsEntities = array();
+
+    private $toPersistEntity = array();
 
     public static function addEntityManager($name, Client $client) {
         if(!is_string($name)) {
@@ -37,6 +39,7 @@ class EntityManager {
 
     private function __construct(Client $client) {
         $this->client = $client;
+        $this->flusher = new EntityFlusher($this);
     }
 
     /**
@@ -51,25 +54,24 @@ class EntityManager {
         return $this->repository[$entityClass];
     }
 
-    public function know($dn, $entity, $originData) {
-        $alreadySave = false;
-        foreach($this->knowsEntities as $fetchEntity) {
-            if($fetchEntity == $entity) {
-                $alreadySave = true;
-            }
-        }
-        if(!$alreadySave) {
-            $this->knowsEntities[] = array(
-                'dn' => $dn,
-                'entity' => $entity,
-                'origin' => $originData
-            );
-        }
-    }
-
     public function getClient() {
         return $this->client;
     }
 
+    public function persist($entity) {
+        if(!is_subclass_of($entity, 'OpenLdapObject\Entity')) {
+            throw new \InvalidArgumentException('The entity is not a valid entity');
+        }
 
-} 
+        if(!in_array($entity, $this->toPersistEntity)) {
+            $this->toPersistEntity[] = $entity;
+        }
+    }
+
+    public function flush() {
+        foreach($this->toPersistEntity as $entity) {
+            $repository = $this->getRepository(get_class($entity));
+            $this->flusher->flushEntity($entity, $repository->getHydrater(), $repository->getAnalyzer());
+        }
+    }
+}

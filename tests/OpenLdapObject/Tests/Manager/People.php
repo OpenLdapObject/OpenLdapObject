@@ -3,11 +3,12 @@
 namespace OpenLdapObject\Tests\Manager;
 
 use OpenLdapObject\Annotations as OLO;
+use OpenLdapObject\Entity;
 
 /**
  * @OLO\Dn(value="ou=people")
  */
-class People {
+class People extends Entity {
     /**
      * @OLO\Column(type="string")
      * @OLO\Index

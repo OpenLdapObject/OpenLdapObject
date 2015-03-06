@@ -27,6 +27,7 @@ class EntityAnalyzer {
     private $listColumns;
     private $listRequiredMethod;
     private $listMissingMethod;
+    private $index;
 
     private static $ColumnAnnotation = 'OpenLdapObject\Annotations\Column';
     private static $IndexAnnotation = 'OpenLdapObject\Annotations\Index';
@@ -85,6 +86,22 @@ class EntityAnalyzer {
 
         $this->listColumns = $columns;
         return $columns;
+    }
+
+    public function getIndex() {
+        if(!is_null($this->index)) return $this->index;
+        $column = $this->listColumns();
+
+        foreach($column as $name => $data) {
+            if($data['index'] == true) {
+                $this->index = $name;
+            }
+        }
+        if(is_null($this->index)) {
+            $this->index = false;
+        }
+
+        return $this->index;
     }
 
     public function getClassAnnotation() {

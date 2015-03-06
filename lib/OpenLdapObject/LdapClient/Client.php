@@ -66,9 +66,13 @@ class Client {
         return $output;
     }
 
-    function __destruct() {
+    public function __destruct() {
         if(!is_null($this->connect)) {
             ldap_close($this->connect);
         }
+    }
+
+    public function create($dn, $content) {
+        ldap_add($this->connect, $dn, $content);
     }
 }

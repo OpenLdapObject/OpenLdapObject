@@ -19,11 +19,7 @@ class Repository {
         $this->className = $className;
         $this->analyzer = new EntityAnalyzer($className);
         $column = $this->analyzer->listColumns();
-        foreach($column as $name => $data) {
-            if($data['index'] == true) {
-                $this->index = $name;
-            }
-        }
+        $index = $this->analyzer->getIndex();
         $this->columns = array_keys($column);
         $this->baseDn = $this->analyzer->getBaseDn();
         $this->hydrater = new Hydrater($this->className);
@@ -36,19 +32,29 @@ class Repository {
         $entities = array();
         foreach($result as $data) {
             $entity = $this->hydrater->hydrate($data['data']);
-            $this->em->know($data['dn'], $entity, $data['data']);
+            $entity->_setDn($data['dn']);
+            $entity->_setOriginData($data['data']);
             $entities[] = $entity;
         }
 
         return $entities;
     }
 
+    public function getHydrater() {
+        return $this->hydrater;
+    }
+
+    public function getAnalyzer() {
+        return $this->analyzer;
+    }
+
     public function find($value) {
-        if(is_null($this->index)) {
+        $index = $this->analyzer->getIndex();
+        if($index === false) {
             throw new \InvalidArgumentException('The ' . $this->className . ' Entity have no index');
         }
 
-        return $this->query('(&(objectclass=*)('.$this->index.'='.$value.'))');
+        return $this->query('(&(objectclass=*)('.$index.'='.$value.'))');
     }
 
     public function findBy(array $search, $limit = 0) {
@@ -69,6 +75,6 @@ class Repository {
         if(count($res) == 0) {
             return false;
         }
-        return $res[1];
+        return $res[0];
     }
-} 
+}
