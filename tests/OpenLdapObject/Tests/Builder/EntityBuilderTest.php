@@ -12,7 +12,7 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase {
     private $entityBuilder;
 
     public function setUp() {
-        $this->entityBuilder = new EntityBuilder('OpenLdapObject\Tests\Manager\People');
+        $this->entityBuilder = new EntityBuilder('OpenLdapObject\Tests\Manager\PeopleTest');
     }
 
     public function testGetter() {
@@ -20,6 +20,7 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase {
 '   public function getUid() {
       return $this->uid;
    }
+
 ');
     }
 
@@ -29,6 +30,7 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase {
       $this->mail = $value;
       return $this;
    }
+
 ');
     }
 
@@ -38,6 +40,7 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase {
       $this->telephoneNumber[] = $value;
       return $this;
    }
+
 ');
     }
 
@@ -49,7 +52,13 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase {
       }
       return $this;
    }
+
 ');
+    }
+
+    public function testBuilder() {
+        $entityBuilder = new EntityBuilder('OpenLdapObject\Tests\Manager\People');
+        $entityBuilder->completeEntity();
     }
 }
  

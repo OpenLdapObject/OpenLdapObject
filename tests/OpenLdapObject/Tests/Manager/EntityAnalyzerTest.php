@@ -11,7 +11,7 @@ class EntityAnalyzerTest extends \PHPUnit_Framework_TestCase {
     private $entityAnalyzer;
 
     public function setUp() {
-        $this->entityAnalyzer = new EntityAnalyzer('OpenLdapObject\Tests\Manager\People');
+        $this->entityAnalyzer = new EntityAnalyzer('OpenLdapObject\Tests\Manager\PeopleTest');
     }
 
     public function testListField() {
@@ -51,37 +51,37 @@ class EntityAnalyzerTest extends \PHPUnit_Framework_TestCase {
 
     public function testListRequiredMethod() {
         $this->assertEquals($this->entityAnalyzer->listRequiredMethod(), array(
-            'getUid',
-            'setUid',
-            'getCn',
-            'setCn',
-            'getSn',
-            'setSn',
-            'getGivenName',
-            'setGivenName',
-            'getMail',
-            'setMail',
-            'getTelephoneNumber',
-            'addTelephoneNumber',
-            'removeTelephoneNumber'
+            'getUid' => array('type' => EntityAnalyzer::GETTER, 'column' => 'uid'),
+            'setUid' => array('type' => EntityAnalyzer::SETTER, 'column' => 'uid'),
+            'getCn' => array('type' => EntityAnalyzer::GETTER, 'column' => 'cn'),
+            'setCn' => array('type' => EntityAnalyzer::SETTER, 'column' => 'cn'),
+            'getSn' => array('type' => EntityAnalyzer::GETTER, 'column' => 'sn'),
+            'setSn' => array('type' => EntityAnalyzer::SETTER, 'column' => 'sn'),
+            'getGivenName' => array('type' => EntityAnalyzer::GETTER, 'column' => 'givenName'),
+            'setGivenName' => array('type' => EntityAnalyzer::SETTER, 'column' => 'givenName'),
+            'getMail' => array('type' => EntityAnalyzer::GETTER, 'column' => 'mail'),
+            'setMail' => array('type' => EntityAnalyzer::SETTER, 'column' => 'mail'),
+            'getTelephoneNumber' => array('type' => EntityAnalyzer::GETTER, 'column' => 'telephoneNumber'),
+            'addTelephoneNumber' => array('type' => EntityAnalyzer::ADDER, 'column' => 'telephoneNumber'),
+            'removeTelephoneNumber' => array('type' => EntityAnalyzer::REMOVER, 'column' => 'telephoneNumber')
         ));
     }
 
     public function testListMissingMethod() {
         $this->assertEquals($this->entityAnalyzer->listMissingMethod(), array(
-            'getUid',
-            'setUid',
-            'getCn',
-            'setCn',
-            'getSn',
-            'setSn',
-            'getGivenName',
-            'setGivenName',
-            'getMail',
-            'setMail',
-            'getTelephoneNumber',
-            'addTelephoneNumber',
-            'removeTelephoneNumber'
+            'getUid' => array('type' => EntityAnalyzer::GETTER, 'column' => 'uid'),
+            'setUid' => array('type' => EntityAnalyzer::SETTER, 'column' => 'uid'),
+            'getCn' => array('type' => EntityAnalyzer::GETTER, 'column' => 'cn'),
+            'setCn' => array('type' => EntityAnalyzer::SETTER, 'column' => 'cn'),
+            'getSn' => array('type' => EntityAnalyzer::GETTER, 'column' => 'sn'),
+            'setSn' => array('type' => EntityAnalyzer::SETTER, 'column' => 'sn'),
+            'getGivenName' => array('type' => EntityAnalyzer::GETTER, 'column' => 'givenName'),
+            'setGivenName' => array('type' => EntityAnalyzer::SETTER, 'column' => 'givenName'),
+            'getMail' => array('type' => EntityAnalyzer::GETTER, 'column' => 'mail'),
+            'setMail' => array('type' => EntityAnalyzer::SETTER, 'column' => 'mail'),
+            'getTelephoneNumber' => array('type' => EntityAnalyzer::GETTER, 'column' => 'telephoneNumber'),
+            'addTelephoneNumber' => array('type' => EntityAnalyzer::ADDER, 'column' => 'telephoneNumber'),
+            'removeTelephoneNumber' => array('type' => EntityAnalyzer::REMOVER, 'column' => 'telephoneNumber')
         ));
     }
 }

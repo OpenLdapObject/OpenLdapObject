@@ -16,6 +16,8 @@ use OpenLdapObject\Utils;
  * @author Toshy62 <yoshi62@live.fr>
  */
 class EntityAnalyzer {
+    const GETTER = 0, SETTER = 1, ADDER = 2, REMOVER = 3;
+
     private $className;
 
     private $reflection;
@@ -103,14 +105,14 @@ class EntityAnalyzer {
         $methodList = array();
 
         foreach($columns as $name => $schema) {
-            $methodList[] = 'get' . Utils::capitalize($name);
+            $methodList['get' . Utils::capitalize($name)] = array('type' => self::GETTER, 'column' => $name);
             switch($schema['type']) {
                 case 'array':
-                    $methodList[] = 'add' . Utils::Capitalize($name);
-                    $methodList[] = 'remove' . Utils::Capitalize($name);
+                    $methodList['add' . Utils::Capitalize($name)] = array('type' => self::ADDER, 'column' => $name);
+                    $methodList['remove' . Utils::Capitalize($name)] = array('type' => self::REMOVER, 'column' => $name);
                     break;
                 case 'string':
-                    $methodList[] = 'set' . Utils::Capitalize($name);
+                    $methodList['set' . Utils::Capitalize($name)] = array('type' => self::SETTER, 'column' => $name);
                     break;
             }
         }
@@ -129,9 +131,9 @@ class EntityAnalyzer {
         $required = $this->listRequiredMethod();
         $missing = array();
 
-        foreach($required as $methodName) {
+        foreach($required as $methodName => $data) {
             if(!$this->reflection->hasMethod($methodName)) {
-                $missing[] = $methodName;
+                $missing[$methodName] = $data;
             }
         }
 
@@ -153,5 +155,12 @@ class EntityAnalyzer {
             }
         }
         return false;
+    }
+
+    /**
+     * @return \ReflectionClass
+     */
+    public function getReflection() {
+        return $this->reflection;
     }
 }
