@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: pierre
- * Date: 06/03/15
- * Time: 17:51
- */
 
 namespace OpenLdapObject\Tests\Manager;
 

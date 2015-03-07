@@ -42,4 +42,3 @@ class PeopleTest extends Entity {
     private $telephoneNumber;
 
 }
-

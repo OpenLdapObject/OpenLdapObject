@@ -24,12 +24,23 @@
  *
  */
 
-namespace OpenLdapObject\Exception;
+use \OpenLdapObject\Console;
 
-use OpenLdapObject\LdapClient\Connection;
-
-class ConnectionException extends \Exception {
-    public function __construct(Connection $connection) {
-        parent::__construct('Unable to connect to ' . $connection->getHostname() . ':' . $connection->getPort());
-    }
+if(php_sapi_name() !== 'cli') {
+    echo 'This Script must be run in a CLI.';
+    exit();
 }
+
+if(strpos(__DIR__, 'vendor') === false) {
+    // We are in a local development
+    $vendorDirectory = __DIR__ . '/../../vendor/';
+} else {
+    // We are in vendor directory
+    $vendorDirectory = __DIR__ . '/../../../../';
+}
+
+require_once $vendorDirectory . 'autoload.php';
+
+$console = new Console();
+$console->main($argc, $argv);
+?>

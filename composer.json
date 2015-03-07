@@ -1,13 +1,20 @@
 {
     "name": "toshy62/openldapobject",
     "type": "library",
+    "keywords": ["openldap", "ldap", "object", "mapping"],
     "description": "Use Object to Read/Write in a LDAP",
+    "homepage": "https://github.com/Toshy62/OpenLdapObject",
+    "license": "MIT",
     "authors": [
         {
             "name": "Toshy62",
             "email": "yoshi62@live.fr"
         }
     ],
+    "support": {
+        "issues": "https://github.com/Toshy62/OpenLdapObject/issues",
+        "source": "https://github.com/Toshy62/OpenLdapObject"
+    },
     "autoload": {
         "psr-0": {
             "OpenLdapObject\\": "lib/",
@@ -17,6 +24,10 @@
     "target-dir": "toshy62/openldapobject",
     "require": {
         "php": ">=5.4.0",
+        "ext-ldap": "*",
         "doctrine/annotations": "dev-master"
-    }
+    },
+    "bin": [
+        "lib/OpenLdapObject/OpenLdapObject.php"
+    ]
 }
