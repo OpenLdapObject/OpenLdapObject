@@ -75,4 +75,19 @@ class Client {
     public function create($dn, $content) {
         ldap_add($this->connect, $dn, $content);
     }
+
+    public function delete($dn) {
+        ldap_delete($this->connect, $dn);
+    }
+
+    public function rename($oldDn, $newDn) {
+        $parent = explode(',', $oldDn);
+        unset($parent[0]);
+        $parentDn = implode(',', $parent);
+        ldap_rename($this->connect, $oldDn, $newDn, $parentDn, true);
+    }
+
+    public function update($dn, $data) {
+        ldap_modify($this->connect, $dn, $data);
+    }
 }

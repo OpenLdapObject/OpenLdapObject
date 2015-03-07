@@ -54,7 +54,7 @@ class Repository {
             throw new \InvalidArgumentException('The ' . $this->className . ' Entity have no index');
         }
 
-        return $this->query('(&(objectclass=*)('.$index.'='.$value.'))');
+        return $this->findOneBy(array($index => $value));
     }
 
     public function findBy(array $search, $limit = 0) {

@@ -8,7 +8,7 @@ use OpenLdapObject\Exception\InflushableException;
 use OpenLdapObject\Manager\Hydrate\Hydrater;
 
 class EntityFlusher {
-    const CREATE = 0, REPLACE = 1, DELETE = 2;
+    const CREATE = 0, RENAME = 1, DELETE = 2;
     /**
      * @var EntityManager
      */
@@ -20,7 +20,7 @@ class EntityFlusher {
     }
 
     public function setParam(array $param) {
-        $keys = array(EntityFlusher::CREATE, EntityFlusher::REPLACE, EntityFlusher::DELETE);
+        $keys = array(EntityFlusher::CREATE, EntityFlusher::RENAME, EntityFlusher::DELETE);
         foreach($keys as $key) {
             if(!array_key_exists($key, $param)) {
                 $this->param[$key] = true;
@@ -60,8 +60,26 @@ class EntityFlusher {
             } else {
                 throw new InflushableException('Unable to create entity, Param::Create is false');
             }
+        } else {
+            if(array_key_exists($analyzer->getIndex(), $diff)) {
+                // If key index is diff => rename
+                if($this->param[EntityFlusher::RENAME]) {
+                    $this->rename($entity, $currentData, $diff, $analyzer);
+                } else {
+                    throw new InflushableException('Unable to rename entity, Param::Rename is false');
+                }
+            }
+
+            $this->em->getClient()->update($entity->_getDn(), $diff);
         }
-        //var_dump($diff);
+    }
+
+    public function removeEntity($entity, Hydrater $hydrater, EntityAnalyzer $analyzer) {
+        if($this->param[EntityFlusher::DELETE]) {
+            $this->em->getClient()->delete($entity->_getDn());
+        } else {
+            throw new InflushableException('Unable to delete entity, Param:Delete is false');
+        }
     }
 
     private static function dataDiff($data, $origin) {
@@ -81,6 +99,22 @@ class EntityFlusher {
     }
 
     private function create($entity, $currentData, $diff, EntityAnalyzer $analyzer) {
+        $dn = $this->getNewDn($entity, $currentData, $analyzer);
+        $entity->_setDn($dn);
+
+        $diff['objectclass'] = $analyzer->getObjectclass();
+
+        $this->em->getClient()->create($dn, $diff);
+    }
+
+    private function rename($entity, $currentData, $diff, EntityAnalyzer $analyzer) {
+        $newDn = explode(',', $this->getNewDn($entity, $currentData, $analyzer));
+        $oldDn = $entity->_getDn();
+        $entity->_setDn(implode(',', $newDn));
+        $this->em->getClient()->rename($oldDn, $newDn[0]);
+    }
+
+    private function getNewDn($entity, $currentData, EntityAnalyzer $analyzer) {
         $index = $analyzer->getIndex();
         if($index === false) {
             throw new InflushableException('Entity ' . get_class($entity) . 'have no index');
@@ -93,10 +127,6 @@ class EntityFlusher {
         if(is_string($this->em->getClient()->getBaseDn())) {
             $dnPiece[] = $this->em->getClient()->getBaseDn();
         }
-        $dn = implode(',', $dnPiece);
-
-        $diff['objectclass'] = $analyzer->getObjectclass();
-
-        $this->em->getClient()->create($dn, $diff);
+        return implode(',', $dnPiece);
     }
 } 

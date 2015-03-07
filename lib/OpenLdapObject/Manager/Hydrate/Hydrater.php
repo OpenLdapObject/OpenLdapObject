@@ -43,7 +43,7 @@ class Hydrater {
 
             if($column[$keyLow]['type'] === 'array') {
                 $method = 'add' . Utils::capitalize($column[$keyLow]['realname']);
-                if(is_array($data)) {
+                if(is_array($value)) {
                     foreach($value as $e) {
                         $entity->$method($e);
                     }

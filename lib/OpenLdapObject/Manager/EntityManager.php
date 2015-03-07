@@ -12,6 +12,7 @@ class EntityManager {
     private $repository = array();
 
     private $toPersistEntity = array();
+    private $toRemoveEntity = array();
 
     public static function addEntityManager($name, Client $client) {
         if(!is_string($name)) {
@@ -68,11 +69,28 @@ class EntityManager {
         }
     }
 
+    public function remove($entity) {
+        if(!is_subclass_of($entity, 'OpenLdapObject\Entity')) {
+            throw new \InvalidArgumentException('The entity is not a valid entity');
+        }
+
+        if(!in_array($entity, $this->toRemoveEntity)) {
+            $this->toRemoveEntity[] = $entity;
+        }
+    }
+
     public function flush(array $param = array()) {
         $this->flusher->setParam($param);
         foreach($this->toPersistEntity as $entity) {
             $repository = $this->getRepository(get_class($entity));
             $this->flusher->flushEntity($entity, $repository->getHydrater(), $repository->getAnalyzer());
         }
+        foreach($this->toRemoveEntity as $entity) {
+            $repository = $this->getRepository(get_class($entity));
+            $this->flusher->removeEntity($entity, $repository->getHydrater(), $repository->getAnalyzer());
+        }
+
+        $this->toPersistEntity = array();
+        $this->toRemoveEntity = array();
     }
 }

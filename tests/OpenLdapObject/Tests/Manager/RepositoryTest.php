@@ -34,10 +34,6 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
     public function testQuery() {
         $people = $this->em->getRepository('\OpenLdapObject\Tests\Manager\People')->find('pdeparis');
 
-        $this->assertEquals(count($people), 1);
-
-        $people = $people[0];
-
         $this->assertEquals($people->getUid(), 'pdeparis');
         $this->assertEquals($people->getSn(), 'Deparis');
         $this->assertEquals($people->getCn(), 'Pierre Deparis');
@@ -56,8 +52,6 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($people->getMail(), 'pierre.deparis@example.com');
         $this->assertEquals($people->getTelephoneNumber(), array('03 00 00 00 01', '04 00 00 00 01'));
 
-        $people->setMail('pierre.deparis@pers.example.com');
-
         $newPeople = new People();
         $newPeople
             ->setUid('mdubois')
@@ -67,8 +61,22 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
             ->setMail('maurice.dubois@example.com')
             ->addTelephoneNumber('03 00 00 00 02');
 
-        $this->em->persist($people);
         $this->em->persist($newPeople);
+        $this->em->flush();
+    }
+
+    public function testRename() {
+        $people = $this->em->getRepository('\OpenLdapObject\Tests\Manager\People')->find('mdubois');
+        //var_dump($people);
+        $people->setUid('maurice.dubois');
+
+        $this->em->persist($people);
+        $this->em->flush();
+    }
+
+    public function testDelete() {
+        $people = $this->em->getRepository('\OpenLdapObject\Tests\Manager\People')->find('maurice.dubois');
+        $this->em->remove($people);
         $this->em->flush();
     }
 }
