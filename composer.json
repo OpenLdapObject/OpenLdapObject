@@ -25,7 +25,7 @@
     "require": {
         "php": ">=5.4.0",
         "ext-ldap": "*",
-        "doctrine/annotations": "dev-master"
+        "doctrine/annotations": "~1.0"
     },
     "bin": [
         "lib/OpenLdapObject/OpenLdapObject.php"
