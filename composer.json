@@ -21,7 +21,6 @@
             "OpenLdapObject\\Tests": "tests/"
         }
     },
-    "target-dir": "toshy62/openldapobject",
     "require": {
         "php": ">=5.4.0",
         "ext-ldap": "*",
