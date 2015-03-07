@@ -93,8 +93,9 @@ class EntityFlusher {
                     throw new InflushableException('Unable to rename entity, Param::Rename is false');
                 }
             }
-
-            $this->em->getClient()->update($entity->_getDn(), $diff);
+            if(count($diff) > 0) {
+                $this->em->getClient()->update($entity->_getDn(), $diff);
+            }
         }
     }
 
