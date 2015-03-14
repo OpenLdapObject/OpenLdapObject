@@ -31,7 +31,7 @@ use OpenLdapObject\Manager\EntityAnalyzer;
 use OpenLdapObject\Utils;
 
 class EntityBuilder {
-    private static $space = '   ';
+    private static $space = '    ';
     private static $eol = PHP_EOL;
     private static $getterVisibility = 'public';
     private static $setterVisibility = 'public';
@@ -59,7 +59,7 @@ class EntityBuilder {
         $endClassPos = strrpos($lineToSet, '}');
 
         $before = substr($lineToSet, 0, $endClassPos-2);
-        $after = substr($lineToSet, $endClassPos-1);
+        $after = substr($lineToSet, $endClassPos-2);
 
         foreach($missingMethod as $data) {
             switch($data['type']) {
