@@ -30,6 +30,9 @@ namespace OpenLdapObject;
 use OpenLdapObject\Builder\EntityBuilder;
 
 class Console {
+    const VERSION = '1.0.1';
+    const DATE = '2015-03-14';
+
     public function main($argc, array $argv) {
         if($argc > 1 && $argv[1] == 'generate') {
             if($argc > 2 && $argc < 5) {
@@ -39,10 +42,13 @@ class Console {
             } else {
                 echo 'Usage php OpenLdapObject.php generate Entity [pathToEntityFile]' . PHP_EOL . PHP_EOL;
             }
+        } elseif($argc > 1 && $argv[1] == 'version') {
+            $this->version();
         } else {
             echo 'Usage php OpenLdapObject.php command Entity [options]' . PHP_EOL . PHP_EOL;
             echo 'Commands:' . PHP_EOL;
             echo 'generate      - Add getters and setters in an entity' . PHP_EOL;
+            echo 'version       - Get version information' . PHP_EOL;
         }
     }
 
@@ -76,5 +82,9 @@ class Console {
         $builder->completeEntity();
 
         echo 'Entity is generate.' . PHP_EOL;
+    }
+
+    public function version() {
+        echo 'Version ' . Console::VERSION . ' (' . CONSOLE::DATE . ')' . PHP_EOL;
     }
 }
