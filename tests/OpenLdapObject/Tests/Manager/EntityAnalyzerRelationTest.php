@@ -29,53 +29,37 @@ class EntityAnalyzerRelationTest extends \PHPUnit_Framework_TestCase {
         $entityAnalyzer = EntityAnalyzer::get('OpenLdapObject\Tests\Manager\OrganisationInvalid');
         $entityAnalyzer->listColumns();
     }
-    /*
+
     public function testGetClassAnnotation() {
         $this->assertEquals($this->entityAnalyzer->getClassAnnotation(), array(
-                'dn' => 'ou=people',
-                'objectclass' => array('inetOrgPerson', 'organizationalPerson', 'person', 'top')
+                'dn' => 'ou=organisation',
+                'objectclass' => array('groupOfNames', 'top')
             )
         );
     }
 
     public function testGetBaseDn() {
-        $this->assertEquals($this->entityAnalyzer->getBaseDn(), 'ou=people');
+        $this->assertEquals($this->entityAnalyzer->getBaseDn(), 'ou=organisation');
     }
 
     public function testListRequiredMethod() {
         $this->assertEquals($this->entityAnalyzer->listRequiredMethod(), array(
-            'getUid' => array('type' => EntityAnalyzer::GETTER, 'column' => 'uid'),
-            'setUid' => array('type' => EntityAnalyzer::SETTER, 'column' => 'uid'),
             'getCn' => array('type' => EntityAnalyzer::GETTER, 'column' => 'cn'),
             'setCn' => array('type' => EntityAnalyzer::SETTER, 'column' => 'cn'),
-            'getSn' => array('type' => EntityAnalyzer::GETTER, 'column' => 'sn'),
-            'setSn' => array('type' => EntityAnalyzer::SETTER, 'column' => 'sn'),
-            'getGivenName' => array('type' => EntityAnalyzer::GETTER, 'column' => 'givenName'),
-            'setGivenName' => array('type' => EntityAnalyzer::SETTER, 'column' => 'givenName'),
-            'getMail' => array('type' => EntityAnalyzer::GETTER, 'column' => 'mail'),
-            'setMail' => array('type' => EntityAnalyzer::SETTER, 'column' => 'mail'),
-            'getTelephoneNumber' => array('type' => EntityAnalyzer::GETTER, 'column' => 'telephoneNumber'),
-            'addTelephoneNumber' => array('type' => EntityAnalyzer::ADDER, 'column' => 'telephoneNumber'),
-            'removeTelephoneNumber' => array('type' => EntityAnalyzer::REMOVER, 'column' => 'telephoneNumber')
+            'getMember' => array('type' => EntityAnalyzer::GETTER, 'column' => 'member'),
+            'addMember' => array('type' => EntityAnalyzer::ADDER, 'column' => 'member'),
+            'removeMember' => array('type' => EntityAnalyzer::REMOVER, 'column' => 'member')
         ));
     }
 
     public function testListMissingMethod() {
         $this->assertEquals($this->entityAnalyzer->listMissingMethod(), array(
-            'getUid' => array('type' => EntityAnalyzer::GETTER, 'column' => 'uid'),
-            'setUid' => array('type' => EntityAnalyzer::SETTER, 'column' => 'uid'),
             'getCn' => array('type' => EntityAnalyzer::GETTER, 'column' => 'cn'),
             'setCn' => array('type' => EntityAnalyzer::SETTER, 'column' => 'cn'),
-            'getSn' => array('type' => EntityAnalyzer::GETTER, 'column' => 'sn'),
-            'setSn' => array('type' => EntityAnalyzer::SETTER, 'column' => 'sn'),
-            'getGivenName' => array('type' => EntityAnalyzer::GETTER, 'column' => 'givenName'),
-            'setGivenName' => array('type' => EntityAnalyzer::SETTER, 'column' => 'givenName'),
-            'getMail' => array('type' => EntityAnalyzer::GETTER, 'column' => 'mail'),
-            'setMail' => array('type' => EntityAnalyzer::SETTER, 'column' => 'mail'),
-            'getTelephoneNumber' => array('type' => EntityAnalyzer::GETTER, 'column' => 'telephoneNumber'),
-            'addTelephoneNumber' => array('type' => EntityAnalyzer::ADDER, 'column' => 'telephoneNumber'),
-            'removeTelephoneNumber' => array('type' => EntityAnalyzer::REMOVER, 'column' => 'telephoneNumber')
+            'getMember' => array('type' => EntityAnalyzer::GETTER, 'column' => 'member'),
+            'addMember' => array('type' => EntityAnalyzer::ADDER, 'column' => 'member'),
+            'removeMember' => array('type' => EntityAnalyzer::REMOVER, 'column' => 'member')
         ));
     }
-    */
+
 }

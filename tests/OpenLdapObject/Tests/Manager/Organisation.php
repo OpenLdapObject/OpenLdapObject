@@ -5,6 +5,10 @@ namespace OpenLdapObject\Tests\Manager;
 use OpenLdapObject\Entity;
 use OpenLdapObject\Annotations as OLO;
 
+/**
+ * @OLO\Dn(value="ou=organisation")
+ * @OLO\Entity({"groupOfNames", "top"})
+ */
 class Organisation extends Entity {
     /**
      * @OLO\Column(type="string")

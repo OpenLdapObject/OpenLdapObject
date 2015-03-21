@@ -51,17 +51,7 @@ class Repository {
 
     private function query($query, $limit = 0) {
         $result = $this->em->getClient()->search($query, $this->columns, $limit, $this->baseDn);
-        $result = Client::cleanResult($result);
-
-        $entities = array();
-        foreach($result as $data) {
-            $entity = $this->hydrater->hydrate($data['data']);
-            $entity->_setDn($data['dn']);
-            $entity->_setOriginData($data['data']);
-            $entities[] = $entity;
-        }
-
-        return $entities;
+        return $this->manage($result);
     }
 
     public function getHydrater() {
@@ -100,5 +90,23 @@ class Repository {
             return false;
         }
         return $res[0];
+    }
+
+    public function manage(array $result) {
+        $result = Client::cleanResult($result);
+
+        $entities = array();
+        foreach($result as $data) {
+            $entity = $this->hydrater->hydrate($data['data']);
+            $entity->_setDn($data['dn']);
+            $entity->_setOriginData($data['data']);
+            $entities[] = $entity;
+        }
+
+        return $entities;
+    }
+
+    public function read($dn, $limit = 1) {
+        return $this->manage($this->em->getClient()->read($dn, $this->columns, $limit));
     }
 }

@@ -10,7 +10,7 @@ class EntityCollection implements \Countable, \Iterator, \ArrayAccess {
 
     private $searchInfo;
 
-    private $entityClassName;
+    private $repository;
 
     private $index = array();
 
@@ -18,12 +18,13 @@ class EntityCollection implements \Countable, \Iterator, \ArrayAccess {
 
     private $current = 0;
 
-    public function __construct($type, array $index, array $info = array()) {
+    public function __construct($type, Repository $repository, array $index, array $info = array()) {
         if(!in_array($type, array(EntityCollection::DN, EntityCollection::SEARCH))) {
             throw new \Exception('Bad type of EntityCollection');
         }
 
         $this->type = $type;
+        $this->repository = $repository;
 
         if($type === EntityCollection::SEARCH) {
             if(!array_key_exists('searchQuery', $info)) {
@@ -112,7 +113,10 @@ class EntityCollection implements \Countable, \Iterator, \ArrayAccess {
      * @return mixed Can return all value types.
      */
     public function offsetGet($offset) {
-        // TODO: Implement offsetGet() method.
+        if(!array_key_exists($offset, $this->data)) {
+            $this->data[$offset] = $this->repository->read($this->index[$offset]);
+        }
+        return $this->data[$offset];
     }
 
     /**
@@ -128,7 +132,7 @@ class EntityCollection implements \Countable, \Iterator, \ArrayAccess {
      * @return void
      */
     public function offsetSet($offset, $value) {
-        // TODO: Implement offsetSet() method.
+        $this->data[$offset] = $value;
     }
 
     /**

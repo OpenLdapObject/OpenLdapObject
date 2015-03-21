@@ -209,6 +209,10 @@ class EntityAnalyzer {
                 case 'string':
                     $methodList['set' . Utils::Capitalize($name)] = array('type' => self::SETTER, 'column' => $name);
                     break;
+                case 'entity':
+                    $methodList['add' . Utils::Capitalize($name)] = array('type' => self::ADDER, 'column' => $name);
+                    $methodList['remove' . Utils::Capitalize($name)] = array('type' => self::REMOVER, 'column' => $name);
+                    break;
             }
         }
 
