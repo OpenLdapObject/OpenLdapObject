@@ -62,4 +62,14 @@ class EntityAnalyzerRelationTest extends \PHPUnit_Framework_TestCase {
         ));
     }
 
+    public function testIsEntityRelation() {
+        $this->assertEquals($this->entityAnalyzer->isEntityRelation('member'), true);
+        $this->assertEquals($this->entityAnalyzer->isEntityRelation('cn'), false);
+    }
+
+    public function testIsMultiEntityRelation() {
+        $this->assertEquals($this->entityAnalyzer->isEntityRelationMultiple('member'), true);
+        $this->assertEquals($this->entityAnalyzer->isEntityRelationMultiple('cn'), false);
+    }
+
 }

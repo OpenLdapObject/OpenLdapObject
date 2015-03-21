@@ -262,4 +262,18 @@ class EntityAnalyzer {
     public function getReflection() {
         return $this->reflection;
     }
+
+    public function isEntityRelation($column) {
+        if(!array_key_exists($column, $this->listColumns())) {
+            return false;
+        }
+        return $this->listColumns()[$column]['type'] === 'entity';
+    }
+
+    public function isEntityRelationMultiple($column) {
+        if($this->isEntityRelation($column)) {
+            return $this->listColumns()[$column]['relation']['multi'];
+        }
+        return false;
+    }
 }
