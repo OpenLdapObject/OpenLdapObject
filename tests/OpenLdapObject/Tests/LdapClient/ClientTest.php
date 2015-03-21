@@ -129,5 +129,20 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
             )
         ));
     }
+
+    public function testRead() {
+        $this->assertEquals($this->client->read('uid=mdupont,ou=people,dc=example,dc=com', array('uid')), array(
+            'count' => 1,
+            0 => array(
+                'uid' => array(
+                    'count' => 1,
+                    0 => 'mdupont'
+                ),
+                0 => 'uid',
+                'count' => 1,
+                'dn' => 'uid=mdupont,ou=people,dc=example,dc=com'
+            )
+        ));
+    }
 }
  

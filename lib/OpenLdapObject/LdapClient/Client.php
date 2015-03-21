@@ -114,4 +114,8 @@ class Client {
     public function update($dn, $data) {
         ldap_modify($this->connect, $dn, $data);
     }
+
+    public function read($dn, array $attributes = array('*'), $limit = 1) {
+        return ldap_get_entries($this->connect, ldap_read($this->connect, $dn, "(objectclass=*)", $attributes, null, $limit));
+    }
 }
