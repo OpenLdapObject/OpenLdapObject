@@ -32,7 +32,7 @@ namespace OpenLdapObject\Annotations;
  * @Annotation
  */
 class Column implements Annotation {
-    private static $listType = array('string', 'array');
+    private static $listType = array('string', 'array', 'entity');
 
     public $type;
 

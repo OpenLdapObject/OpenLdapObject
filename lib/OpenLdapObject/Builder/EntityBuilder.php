@@ -46,7 +46,7 @@ class EntityBuilder {
 
     public function __construct($className) {
         $this->className = $className;
-        $this->analyzer = new EntityAnalyzer($this->className);
+        $this->analyzer = EntityAnalyzer::get($this->className);
     }
 
     public function completeEntity() {

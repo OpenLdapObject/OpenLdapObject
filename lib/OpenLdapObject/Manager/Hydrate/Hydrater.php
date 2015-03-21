@@ -37,7 +37,7 @@ class Hydrater {
 
     public function __construct($className) {
         $this->className = $className;
-        $this->analyzer = new EntityAnalyzer($className);
+        $this->analyzer = EntityAnalyzer::get($className);
     }
 
     /**

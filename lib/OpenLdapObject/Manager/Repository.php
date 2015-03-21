@@ -41,7 +41,7 @@ class Repository {
     public function __construct(EntityManager $em, $className) {
         $this->em = $em;
         $this->className = $className;
-        $this->analyzer = new EntityAnalyzer($className);
+        $this->analyzer = EntityAnalyzer::get($className);
         $column = $this->analyzer->listColumns();
         $index = $this->analyzer->getIndex();
         $this->columns = array_keys($column);

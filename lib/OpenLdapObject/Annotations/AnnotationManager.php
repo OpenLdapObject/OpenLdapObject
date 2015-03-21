@@ -29,7 +29,7 @@ namespace OpenLdapObject\Annotations;
 
 abstract class AnnotationManager {
     private static $annotationPackage = 'OpenLdapObject\Annotations\\';
-    private static $annotationList = array('Column', 'Index', 'Dn', 'Entity');
+    private static $annotationList = array('Column', 'Index', 'Dn', 'Entity', 'EntityRelation');
     private static $annotationIsLoad = false;
 
     public static function autoLoadAnnotation() {

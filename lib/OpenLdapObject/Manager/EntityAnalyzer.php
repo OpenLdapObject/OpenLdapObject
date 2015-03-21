@@ -59,8 +59,18 @@ class EntityAnalyzer {
     private static $IndexAnnotation = 'OpenLdapObject\Annotations\Index';
     private static $dnAnnotation = 'OpenLdapObject\Annotations\Dn';
     private static $entityAnnotation = 'OpenLdapObject\Annotations\Entity';
+    private static $entityRelationAnnotation = 'OpenLdapObject\Annotations\EntityRelation';
 
-    public function __construct($className) {
+    private static $instances = array();
+
+    public static function get($className) {
+        if(!array_key_exists($className, self::$instances)) {
+            self::$instances[$className] = new EntityAnalyzer($className);
+        }
+        return self::$instances[$className];
+    }
+
+    private function __construct($className) {
         $this->className = $className;
 
         $this->reflection = new \ReflectionClass($className);
@@ -107,6 +117,25 @@ class EntityAnalyzer {
                     $column['index'] = false;
                 }
 
+                // If is an entity Column, check entityRelationAnnotation
+                if($column['type'] == 'entity') {
+                    if(($relationAnnotation = self::haveAnnotation(self::$entityRelationAnnotation, $propertyAnnotation)) !== false) {
+                        $relationAnnotation->check();
+                        try {
+                            $annotationClassOfRelation = EntityAnalyzer::get($relationAnnotation->classname)->getClassAnnotation();
+                        } catch(InvalidEntityException $e) {
+                            throw new InvalidAnnotationException($relationAnnotation, 'classname', 'The class ' . $relationAnnotation->classname . ' is not an Entity');
+                        }
+
+                        $column['relation'] = array(
+                            'classname' => $relationAnnotation->classname,
+                            'multi' => $relationAnnotation->multi
+                        );
+                    } else {
+                        throw new InvalidAnnotationException(null, null, 'A Entity Column must have a EntityRelation annotations');
+                    }
+                }
+
                 $columns[$property->getName()] = $column;
             }
         }
@@ -135,6 +164,9 @@ class EntityAnalyzer {
         if(!is_null($this->classAnnotation)) return $this->classAnnotation;
 
         $annotation = $this->annotationReader->getClassAnnotation($this->reflection, self::$dnAnnotation);
+        if(is_null($annotation)) {
+            throw new InvalidEntityException($this->className . ' have no ' . self::$dnAnnotation . ' annotation');
+        }
         $annotation->check();
 
         $this->classAnnotation = array('dn' => $annotation->value);
