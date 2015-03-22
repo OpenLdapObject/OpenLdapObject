@@ -46,7 +46,7 @@ class Repository {
         $index = $this->analyzer->getIndex();
         $this->columns = array_keys($column);
         $this->baseDn = $this->analyzer->getBaseDn();
-        $this->hydrater = new Hydrater($this->className);
+        $this->hydrater = new Hydrater($this->className, $em);
     }
 
     private function query($query, $limit = 0) {
@@ -107,6 +107,14 @@ class Repository {
     }
 
     public function read($dn, $limit = 1) {
-        return $this->manage($this->em->getClient()->read($dn, $this->columns, $limit));
+        $res = $this->manage($this->em->getClient()->read($dn, $this->columns, $limit));
+        if(count($res) == 0) {
+            return false;
+        }
+        return $res[0];
+    }
+
+    public function getClassName() {
+        return $this->className;
     }
 }

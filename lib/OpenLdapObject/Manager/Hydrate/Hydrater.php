@@ -29,15 +29,29 @@ namespace OpenLdapObject\Manager\Hydrate;
 
 use OpenLdapObject\Exception\InvalidHydrateException;
 use OpenLdapObject\Manager\EntityAnalyzer;
+use OpenLdapObject\Collection\EntityCollection;
+use OpenLdapObject\Manager\EntityManager;
 use OpenLdapObject\Utils;
 
 class Hydrater {
+    /**
+     * @var string
+     */
     private $className;
+    /**
+     * @var EntityAnalyzer
+     */
     private $analyzer;
 
-    public function __construct($className) {
+    /**
+     * @var \OpenLdapObject\Manager\EntityManager
+     */
+    private $em;
+
+    public function __construct($className, EntityManager $em = null) {
         $this->className = $className;
         $this->analyzer = EntityAnalyzer::get($className);
+        $this->em = $em;
     }
 
     /**
@@ -61,7 +75,7 @@ class Hydrater {
                 continue;
             }
 
-            if(is_array($value) && $column[$keyLow]['type'] !== 'array') {
+            if(is_array($value) && $column[$keyLow]['type'] === 'string') {
                 throw new InvalidHydrateException('Column ' . $key . ' define as a string but data is array');
             }
 
@@ -73,6 +87,20 @@ class Hydrater {
                     }
                 } else {
                     $entity->$method($value);
+                }
+            } elseif($column[$keyLow]['type'] === 'entity') {
+                $multi = $this->analyzer->isEntityRelationMultiple($keyLow);
+                if($multi) {
+                    $property = $this->analyzer->getReflection()->getProperty($keyLow);
+                    $isAccessible = $property->isPublic();
+                    $property->setAccessible(true);
+                    $property->setValue($entity, new EntityCollection(EntityCollection::DN, $this->em->getRepository($column[$keyLow]['relation']['classname']), $value));
+                    if(!$isAccessible) {
+                        $property->setAccessible(false);
+                    }
+                } else {
+                    $method = 'set' . Utils::capitalize($column[$keyLow]['realname']);
+                    $entity->$method($this->repository->read($value));
                 }
             } else {
                 $method = 'set' . Utils::capitalize($column[$keyLow]['realname']);

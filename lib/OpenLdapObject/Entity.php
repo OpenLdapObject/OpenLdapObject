@@ -25,6 +25,7 @@
  */
 
 namespace OpenLdapObject;
+use OpenLdapObject\Manager\EntityCollection;
 
 /**
  * Class Entity

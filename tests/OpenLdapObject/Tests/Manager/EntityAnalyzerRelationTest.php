@@ -11,7 +11,7 @@ class EntityAnalyzerRelationTest extends \PHPUnit_Framework_TestCase {
     private $entityAnalyzer;
 
     public function setUp() {
-        $this->entityAnalyzer = EntityAnalyzer::get('OpenLdapObject\Tests\Manager\Organisation');
+        $this->entityAnalyzer = EntityAnalyzer::get('OpenLdapObject\Tests\Manager\OrganisationTest');
     }
 
     public function testListField() {
