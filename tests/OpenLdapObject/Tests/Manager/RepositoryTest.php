@@ -69,5 +69,10 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
         }
         $this->assertEquals($uid, array('pdeparis', 'mdupont'));
     }
+
+    public function testRelationNull() {
+        $org = $this->em->getRepository('\OpenLdapObject\Tests\Manager\Organisation')->find('bad');
+        $this->assertEquals($org->getMember()[1], false);
+    }
 }
  
