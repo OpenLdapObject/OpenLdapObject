@@ -82,10 +82,14 @@ class EntityCollection extends \ArrayObject {
     }
 
     public function offsetSet($index, $newval) {
+        if(is_string($value)) {
+            $value = $this->repository->read($value);
+        }
         if(!is_a($newval, $this->repository->getClassName())) {
             throw new \InvalidArgumentException(sprintf('%s is not a %s', $newval, $this->repository->getClassName()));
         }
         $this->data[$index] = $newval;
+        $this->index[$index] = $newval->_getDn();
     }
 
     public function offsetUnset($index) {
@@ -94,8 +98,11 @@ class EntityCollection extends \ArrayObject {
     }
 
     public function append($value) {
-        if(!is_a($newval, $this->repository->getClassName())) {
-            throw new \InvalidArgumentException(sprintf('%s is not a %s', $newval, $this->repository->getClassName()));
+        if(is_string($value)) {
+            $value = $this->repository->read($value);
+        }
+        if(!is_a($value, $this->repository->getClassName())) {
+            throw new \InvalidArgumentException(sprintf('%s is not a %s', $value, $this->repository->getClassName()));
         }
         $this->data[] = $value;
         $this->index[] = $value->_getDn();
@@ -116,5 +123,19 @@ class EntityCollection extends \ArrayObject {
         return $this->iterator;
     }
 
+    public function remove($value) {
+        foreach($this->index as $key => $val) {
+            if($this->offsetGet($key) === $value) {
+                $this->offsetUnset($key);
+            }
+        }
+    }
 
+    public function toArray() {
+        $array = array();
+        foreach($this->index as $key => $value) {
+            $array[] = $this->offsetGet($key);
+        }
+        return $array;
+    }
 }

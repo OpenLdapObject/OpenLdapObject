@@ -73,6 +73,13 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
     public function testRelationNull() {
         $org = $this->em->getRepository('\OpenLdapObject\Tests\Manager\Organisation')->find('bad');
         $this->assertEquals($org->getMember()[1], false);
+
+        $org->removeMember(false);
+
+        $this->em->persist($org);
+        $this->em->flush();
+
+        $this->em->getClient()->update($org->_getDn(), array('member' => array($org->getMember()[0]->_getDn(), 'uid=youdi,ou=people,dc=example,dc=com')));
     }
 }
  

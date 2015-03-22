@@ -77,6 +77,17 @@ class EntityFlusher {
 
         $diff = self::dataDiff($currentData, $originData);
 
+        foreach($diff as $column => $value) {
+            // Convert array of entity to array of DN
+            if($analyzer->isEntityRelation($column)){
+                $listDn = array();
+                foreach($value as $e) {
+                    $listDn[] = $e->_getDn();
+                }
+                $diff[$column] = $listDn;
+            }
+        }
+
         $dn = $entity->_getDn();
         if(is_null($dn)) {
             if($this->param[EntityFlusher::CREATE]) {

@@ -94,6 +94,8 @@ class Hydrater {
                     $property = $this->analyzer->getReflection()->getProperty($keyLow);
                     $isAccessible = $property->isPublic();
                     $property->setAccessible(true);
+                    // Manage multi entity but only one
+                    if(!is_array($value)) $value = array($value);
                     $property->setValue($entity, new EntityCollection(EntityCollection::DN, $this->em->getRepository($column[$keyLow]['relation']['classname']), $value));
                     if(!$isAccessible) {
                         $property->setAccessible(false);
