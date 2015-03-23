@@ -51,7 +51,7 @@ class Client {
     }
     
     public function getConnect() {
-        return $connect;
+        return $this->connect;
     }
 
     public function search($filter, array $attributes = array('*'), $limit = 0, $overloadDn = null) {
