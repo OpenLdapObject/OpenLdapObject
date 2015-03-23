@@ -117,4 +117,8 @@ class EntityManager {
         $this->toPersistEntity = array();
         $this->toRemoveEntity = array();
     }
+    
+    public function setClient(Client $client) {
+        $this->client = $client;
+    }
 }
