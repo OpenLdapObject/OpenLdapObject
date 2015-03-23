@@ -49,6 +49,10 @@ class Client {
     public function getBaseDn() {
         return $this->baseDn;
     }
+    
+    public function getConnect() {
+        return $connect;
+    }
 
     public function search($filter, array $attributes = array('*'), $limit = 0, $overloadDn = null) {
         $baseDn = '';
