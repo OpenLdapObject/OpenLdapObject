@@ -61,6 +61,7 @@ class EntityFlusher {
      */
     public function flushEntity($entity, Hydrater $hydrater, EntityAnalyzer $analyzer) {
         $originData = $entity->_getOriginData();
+        $originName = array();
 
         if(is_null($originData)) {
             $originData = array();
@@ -73,20 +74,27 @@ class EntityFlusher {
             }
         }
 
+        foreach($analyzer->listColumns() as $name => $data) {
+            $originName[strtolower($name)] = $name;
+        }
+
         $currentData = $hydrater->getData($entity);
 
-        $diff = self::dataDiff($currentData, $originData);
-
-        foreach($diff as $column => $value) {
+        foreach($currentData as $column => $value) {
+            if(array_key_exists($originName[strtolower($column)], $analyzer->listColumns()) && $analyzer->listColumns()[$originName[strtolower($column)]]['type'] === 'array' && is_null($value)) {
+                $currentData[$column] = array();
+            }
             // Convert array of entity to array of DN
-            if($analyzer->isEntityRelation($column)){
+            if($analyzer->isEntityRelation($originName[strtolower($column)])){
                 $listDn = array();
                 foreach($value as $e) {
                     $listDn[] = $e->_getDn();
                 }
-                $diff[$column] = $listDn;
+                $currentData[$column] = $listDn;
             }
         }
+
+        $diff = self::dataDiff($currentData, $originData);
 
         $dn = $entity->_getDn();
         if(is_null($dn)) {

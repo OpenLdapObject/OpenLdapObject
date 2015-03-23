@@ -60,7 +60,7 @@ class Hydrater {
      * @return mixed Entity
      * @throws \OpenLdapObject\Exception\InvalidHydrateException
      */
-    public function hydrate(array $data) {
+    public function hydrate(array &$data) {
         $entity = new $this->className();
         // To fix a bug: Ldap column name is always to lower case
         $column = array();
@@ -81,12 +81,12 @@ class Hydrater {
 
             if($column[$keyLow]['type'] === 'array') {
                 $method = 'add' . Utils::capitalize($column[$keyLow]['realname']);
-                if(is_array($value)) {
-                    foreach($value as $e) {
-                        $entity->$method($e);
-                    }
-                } else {
-                    $entity->$method($value);
+                if(!is_array($value)) {
+                    $data[$key] = array($value);
+                    $value = array($value);
+                }
+                foreach($value as $e) {
+                    $entity->$method($e);
                 }
             } elseif($column[$keyLow]['type'] === 'entity') {
                 $multi = $this->analyzer->isEntityRelationMultiple($column[$keyLow]['realname']);
@@ -95,7 +95,10 @@ class Hydrater {
                     $isAccessible = $property->isPublic();
                     $property->setAccessible(true);
                     // Manage multi entity but only one
-                    if(!is_array($value)) $value = array($value);
+                    if(!is_array($value)) {
+                        $data[$key] = array($value);
+                        $value = array($value);
+                    }
                     $property->setValue($entity, new EntityCollection(EntityCollection::DN, $this->em->getRepository($column[$keyLow]['relation']['classname']), $value));
                     if(!$isAccessible) {
                         $property->setAccessible(false);
