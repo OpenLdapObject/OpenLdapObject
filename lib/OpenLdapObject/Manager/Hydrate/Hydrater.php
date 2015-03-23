@@ -89,9 +89,9 @@ class Hydrater {
                     $entity->$method($value);
                 }
             } elseif($column[$keyLow]['type'] === 'entity') {
-                $multi = $this->analyzer->isEntityRelationMultiple($keyLow);
+                $multi = $this->analyzer->isEntityRelationMultiple($column[$keyLow]['realname']);
                 if($multi) {
-                    $property = $this->analyzer->getReflection()->getProperty($keyLow);
+                    $property = $this->analyzer->getReflection()->getProperty($column[$keyLow]['realname']);
                     $isAccessible = $property->isPublic();
                     $property->setAccessible(true);
                     // Manage multi entity but only one
