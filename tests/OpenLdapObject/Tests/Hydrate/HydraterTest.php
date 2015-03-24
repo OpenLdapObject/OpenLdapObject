@@ -16,21 +16,23 @@ class HydraterTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testHydrate() {
-        $people = $this->hydrater->hydrate(array(
+        $array = array(
             'uid' => 'pdeparis',
             'telephoneNumber' => array('03 00 00 00 00', '04 00 00 00 00'),
             'givenName' => 'Pierre'
-        ));
+        );
+        $people = $this->hydrater->hydrate($array);
         $this->assertEquals($people->getUid(), 'pdeparis');
         $this->assertEquals($people->getTelephoneNumber(), array('03 00 00 00 00', '04 00 00 00 00'));
         $this->assertEquals($people->getGivenName(), 'Pierre');
     }
 
     public function testGetData() {
-        $people = $this->hydrater->hydrate(array(
+        $array = array(
             'uid' => 'pdeparis',
             'telephoneNumber' => array('03 00 00 00 00', '04 00 00 00 00')
-        ));
+        );
+        $people = $this->hydrater->hydrate($array);
 
         $this->assertEquals($this->hydrater->getData($people), array(
             'uid' => 'pdeparis',
