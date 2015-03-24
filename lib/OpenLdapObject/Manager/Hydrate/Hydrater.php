@@ -128,6 +128,7 @@ class Hydrater {
         foreach($column as $key => $value) {
             $method = 'get' . Utils::capitalize($key);
             $data[$key] = $entity->$method();
+            if(is_null($data[$key])) $data[$key] = array();
         }
 
         return $data;

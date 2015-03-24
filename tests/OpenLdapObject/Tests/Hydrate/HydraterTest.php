@@ -37,10 +37,10 @@ class HydraterTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($this->hydrater->getData($people), array(
             'uid' => 'pdeparis',
             'telephoneNumber' => array('03 00 00 00 00', '04 00 00 00 00'),
-            'cn' => null,
-            'sn' => null,
-            'givenName' => null,
-            'mail' => null
+            'cn' => array(),
+            'sn' => array(),
+            'givenName' => array(),
+            'mail' => array()
         ));
     }
 }
