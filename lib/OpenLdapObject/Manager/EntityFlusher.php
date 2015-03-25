@@ -88,7 +88,9 @@ class EntityFlusher {
             if($analyzer->isEntityRelation($originName[strtolower($column)])){
                 $listDn = array();
                 foreach($value as $e) {
-                    $listDn[] = $e->_getDn();
+					if($e instanceof Entity) {
+						$listDn[] = $e->_getDn();
+					}
                 }
                 $currentData[$column] = $listDn;
             }

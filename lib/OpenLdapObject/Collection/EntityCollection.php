@@ -1,141 +1,133 @@
 <?php
-/*
- * The MIT License (MIT)
- *
- * Copyright (c) 2015 Pierre Pélisset
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- *
- */
-
 
 namespace OpenLdapObject\Collection;
 
-
-use ArrayIterator;
 use OpenLdapObject\Manager\Repository;
 
-class EntityCollection extends \ArrayObject {
-    const DN = 0, SEARCH = 1;
+class EntityCollection implements Collection {
+	const DN = 0, SEARCH = 1;
 
-    private $type;
+	private $type;
 
-    private $searchInfo;
+	private $searchInfo;
 
-    private $repository;
+	private $repository;
 
-    private $index = array();
+	private $index = array();
 
-    private $data = array();
+	private $data = array();
 
-    private $info = array();
+	private $info = array();
 
-    private $iterator;
+	public function __construct($type, Repository $repository, array $index, array $info = array(), $data = array()) {
+		if(!in_array($type, array(EntityCollection::DN, EntityCollection::SEARCH))) {
+			throw new \InvalidArgumentException('Bad type of EntityCollection');
+		}
 
-    public function __construct($type, Repository $repository, array $index, array $info = array(), $data = array()) {
-        parent::__construct();
-        $this->setFlags(\ArrayObject::STD_PROP_LIST);
-        if(!in_array($type, array(EntityCollection::DN, EntityCollection::SEARCH))) {
-            throw new \Exception('Bad type of EntityCollection');
-        }
+		$this->type = $type;
+		$this->repository = $repository;
+		$this->info = $info;
 
-        $this->type = $type;
-        $this->repository = $repository;
-        $this->info = $info;
+		if($type === EntityCollection::SEARCH) {
+			throw new \Exception('Search not already implements');
+			if(!array_key_exists('searchQuery', $info)) {
+				throw new \Exception('Type SEARCH but have no $info[\'searchQuery\']');
+			}
+			$this->searchInfo = $info['searchQuery'];
+		}
 
-        if($type === EntityCollection::SEARCH) {
-            if(!array_key_exists('searchQuery', $info)) {
-                throw new \Exception('Type SEARCH but have no $info[\'searchQuery\']');
-            }
-            $this->searchInfo = $info['searchQuery'];
-        }
+		$this->index = $index;
+		$this->data = $data;
+	}
 
-        $this->index = $index;
-        $this->data = $data;
-    }
+	public function add($element) {
+		$this->index[] = $element->_getDn();
+		$this->data[] = $element;
+	}
 
-    public function offsetExists($index) {
-        return (array_key_exists($index, $this->index) || array_key_exists($index, $this->data));
-    }
+	public function clear() {
+		$this->index = array();
+		$this->data = array();
+	}
 
-    public function offsetGet($index) {
-        if(!array_key_exists($index, $this->data)) {
-            $this->data[$index] = $this->repository->read($this->index[$index]);
-        }
-        return $this->data[$index];
-    }
+	public function contains($element) {
+		return $this->indexOf($element) !== false;
+	}
 
-    public function offsetSet($index, $newval) {
-        if(is_string($value)) {
-            $value = $this->repository->read($value);
-        }
-        if(!is_a($newval, $this->repository->getClassName())) {
-            throw new \InvalidArgumentException(sprintf('%s is not a %s', $newval, $this->repository->getClassName()));
-        }
-        $this->data[$index] = $newval;
-        $this->index[$index] = $newval->_getDn();
-    }
+	public function containsKey($key) {
+		return array_key_exists($key, $this->index);
+	}
 
-    public function offsetUnset($index) {
-        if(array_key_exists($index, $this->data)) unset($this->data[$index]);
-        if(array_key_exists($index, $this->index)) unset($this->index[$index]);
-    }
+	public function get($key) {
+		if(!array_key_exists($key, $this->index)) {
+			throw new \OutOfBoundsException($key);
+		}
+		if(!array_key_exists($key, $this->data)) {
+			$this->data[$key] = $this->repository->read($this->index[$key]);
+		}
+		return $this->data[$key];
+	}
 
-    public function append($value) {
-        if(is_string($value)) {
-            $value = $this->repository->read($value);
-        }
-        if(!is_a($value, $this->repository->getClassName())) {
-            throw new \InvalidArgumentException(sprintf('%s is not a %s', $value, $this->repository->getClassName()));
-        }
-        $this->data[] = $value;
-        $this->index[] = $value->_getDn();
-    }
+	public function isEmpty() {
+		return $this->count() < 1;
+	}
 
-    public function getArrayCopy() {
-        return new EntityCollection($this->type, $this->repository, $this->index, $this->info, $this->data);
-    }
+	public function indexOf($element) {
+		foreach($this as $key => $value) {
+			if($value === $element) {
+				return $key;
+			}
+		}
+		return false;
+	}
 
-    public function count() {
-        return count($this->index);
-    }
+	public function remove($key) {
+		unset($this->index[$key]);
+		unset($this->data[$key]);
+	}
 
-    public function getIterator() {
-        if(is_null($this->iterator)) {
-            $this->iterator = new EntityIterator($this);
-        }
-        return $this->iterator;
-    }
+	public function removeElement($element) {
+		foreach($this as $key => $value) {
+			if($element === $value) {
+				$this->remove($key);
+			}
+		}
+	}
 
-    public function remove($value) {
-        foreach($this->index as $key => $val) {
-            if($this->offsetGet($key) === $value) {
-                $this->offsetUnset($key);
-            }
-        }
-    }
+	public function set($key, $value) {
+		$this->index[$key] = $value->_getDn();
+		$this->data[$key] = $value;
+	}
 
-    public function toArray() {
-        $array = array();
-        foreach($this->index as $key => $value) {
-            $array[] = $this->offsetGet($key);
-        }
-        return $array;
-    }
+	public function toArray() {
+		$array = array();
+		foreach($this->index as $key => $dn) {
+			$array[$key] = $this->get($key);
+		}
+		return $array;
+	}
+
+	public function getIterator() {
+		return new \ArrayIterator($this->toArray());
+	}
+
+	public function offsetExists($offset) {
+		return $this->containsKey($offset);
+	}
+
+	public function offsetGet($offset) {
+		return $this->get($offset);
+	}
+
+	public function offsetSet($offset, $value) {
+		$this->set($offset, $value);
+	}
+
+	public function offsetUnset($offset) {
+		$this->remove($offset);
+	}
+
+	public function count() {
+		return count($this->index);
+	}
 }

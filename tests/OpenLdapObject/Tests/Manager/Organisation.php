@@ -43,7 +43,7 @@ class Organisation extends Entity {
     }
 
     public function removeMember($value) {
-        $this->member->remove($value);
+        $this->member->removeElement($value);
         return $this;
     }
 
