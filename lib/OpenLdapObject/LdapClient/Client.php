@@ -65,8 +65,8 @@ class Client {
         }
         $result = @ldap_search($this->connect, $baseDn, $filter, $attributes, 0, $limit);
         if(!$result) {
-            var_dump(ldap_error($this->connect));
-            return null;
+            echo ldap_error($this->connect);
+            return false;
         }
         return ldap_get_entries($this->connect, $result);
     }
@@ -101,22 +101,38 @@ class Client {
     }
 
     public function create($dn, $content) {
-        ldap_add($this->connect, $dn, $content);
+        if(!@ldap_add($this->connect, $dn, $content)) {
+            echo ldap_error($this->connect);
+            return false;
+        }
+        return true;
     }
 
     public function delete($dn) {
-        ldap_delete($this->connect, $dn);
+        if(!@ldap_delete($this->connect, $dn)) {
+            echo ldap_error($this->connect);
+            return false;
+        }
+        return true;
     }
 
     public function rename($oldDn, $newDn) {
         $parent = explode(',', $oldDn);
         unset($parent[0]);
         $parentDn = implode(',', $parent);
-        ldap_rename($this->connect, $oldDn, $newDn, $parentDn, true);
+        if(!@ldap_rename($this->connect, $oldDn, $newDn, $parentDn, true)) {
+            echo ldap_error($this->connect);
+            return false;
+        }
+        return true;
     }
 
     public function update($dn, $data) {
-        ldap_modify($this->connect, $dn, $data);
+        if(!@ldap_modify($this->connect, $dn, $data)) {
+            echo ldap_error($this->connect);
+            return false;
+        }
+        return true;
     }
 
     public function read($dn, array $attributes = array('*'), $limit = 1) {
