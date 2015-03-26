@@ -38,7 +38,7 @@ class Organisation extends Entity {
     }
 
     public function addMember($value) {
-        $this->member->append($value);
+        $this->member->add($value);
         return $this;
     }
 

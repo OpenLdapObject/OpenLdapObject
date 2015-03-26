@@ -42,12 +42,30 @@ class Console {
             } else {
                 echo 'Usage php OpenLdapObject.php generate Entity [pathToEntityFile]' . PHP_EOL . PHP_EOL;
             }
-        } elseif($argc > 1 && $argv[1] == 'version') {
+        } elseif($argc > 1 && $argv[1] == 'clean') {
+			if($argc > 2 && $argc < 5) {
+				$entity = $argv[2];
+				$path = (count($argc) == 4 ? $argv[3] : null);
+				$this->clean($entity, $path);
+			} else {
+				echo 'Usage php OpenLdapObject.php clean Entity [pathToEntityFile]' . PHP_EOL . PHP_EOL;
+			}
+		} elseif($argc > 1 && $argv[1] == 'regenerate') {
+			if($argc > 2 && $argc < 5) {
+				$entity = $argv[2];
+				$path = (count($argc) == 4 ? $argv[3] : null);
+				$this->regenerate($entity, $path);
+			} else {
+				echo 'Usage php OpenLdapObject.php regenerate Entity [pathToEntityFile]' . PHP_EOL . PHP_EOL;
+			}
+		} elseif($argc > 1 && $argv[1] == 'version') {
             $this->version();
         } else {
             echo 'Usage php OpenLdapObject.php command Entity [options]' . PHP_EOL . PHP_EOL;
             echo 'Commands:' . PHP_EOL;
             echo 'generate      - Add getters and setters in an entity' . PHP_EOL;
+			echo 'regenerate    - Remove and regenerate all getters and setters in an entity' . PHP_EOL;
+			echo 'clean      	- Remove getters and setters in an entity' . PHP_EOL;
             echo 'version       - Get version information' . PHP_EOL;
         }
     }
@@ -57,7 +75,7 @@ class Console {
         if(is_null($pathToEntity)) {
             echo 'No path is defined, try to autoload class...' . PHP_EOL . PHP_EOL;
 
-            spl_autoload_call($entityClassName);
+			if(!class_exists($entityClassName)) spl_autoload_call($entityClassName);
             if(!class_exists($entityClassName)) {
                 echo 'Unable to autoload the entity class, try with a path' . PHP_EOL;
                 echo '  Example: php OpenLdapObject.php generate /Namespace/Entity Namespace/Entity.php';
@@ -83,6 +101,71 @@ class Console {
 
         echo 'Entity is generate.' . PHP_EOL;
     }
+
+	public function clean($entityClassName, $pathToEntity) {
+		$entityClassName = str_replace('/', '\\', $entityClassName);
+		if(is_null($pathToEntity)) {
+			echo 'No path is defined, try to autoload class...' . PHP_EOL . PHP_EOL;
+
+			if(!class_exists($entityClassName)) spl_autoload_call($entityClassName);
+			if(!class_exists($entityClassName)) {
+				echo 'Unable to autoload the entity class, try with a path' . PHP_EOL;
+				echo '  Example: php OpenLdapObject.php clean /Namespace/Entity Namespace/Entity.php';
+				exit();
+			} else {
+				echo 'Class is load.' . PHP_EOL;
+			}
+		} else {
+			if(!file_exists($pathToEntity)) {
+				echo 'The file ' . $pathToEntity . ' don\'t exist';
+				exit();
+			}
+			require_once $pathToEntity;
+			if(!class_exists($entityClassName)) {
+				echo 'The File ' . $pathToEntity . ' don\'t define the class ' . $entityClassName . PHP_EOL;
+				exit();
+			}
+		}
+
+		echo 'Cleaning entity...' . PHP_EOL;
+		$builder = new EntityBuilder($entityClassName);
+		$builder->cleanGetterSetter();
+
+		echo 'Entity is clean.' . PHP_EOL;
+	}
+
+	public function regenerate($entityClassName, $pathToEntity) {
+		$entityClassName = str_replace('/', '\\', $entityClassName);
+		if(is_null($pathToEntity)) {
+			echo 'No path is defined, try to autoload class...' . PHP_EOL . PHP_EOL;
+
+			if(!class_exists($entityClassName)) spl_autoload_call($entityClassName);
+			if(!class_exists($entityClassName)) {
+				echo 'Unable to autoload the entity class, try with a path' . PHP_EOL;
+				echo '  Example: php OpenLdapObject.php clean /Namespace/Entity Namespace/Entity.php';
+				exit();
+			} else {
+				echo 'Class is load.' . PHP_EOL;
+			}
+		} else {
+			if(!file_exists($pathToEntity)) {
+				echo 'The file ' . $pathToEntity . ' don\'t exist';
+				exit();
+			}
+			require_once $pathToEntity;
+			if(!class_exists($entityClassName)) {
+				echo 'The File ' . $pathToEntity . ' don\'t define the class ' . $entityClassName . PHP_EOL;
+				exit();
+			}
+		}
+
+		echo 'Regenerate entity...' . PHP_EOL;
+		$builder = new EntityBuilder($entityClassName);
+		$builder->regenerateGetterSetter();
+		$builder->completeEntity();
+
+		echo 'Entity is generate.' . PHP_EOL;
+	}
 
     public function version() {
         echo 'Version ' . Console::VERSION . ' (' . CONSOLE::DATE . ')' . PHP_EOL;

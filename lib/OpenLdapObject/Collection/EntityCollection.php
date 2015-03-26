@@ -2,6 +2,7 @@
 
 namespace OpenLdapObject\Collection;
 
+use OpenLdapObject\Exception\InvalidEntityException;
 use OpenLdapObject\Manager\Repository;
 
 class EntityCollection implements Collection {
@@ -11,7 +12,11 @@ class EntityCollection implements Collection {
 
 	private $searchInfo;
 
+	/**
+	 * @var Repository
+	 */
 	private $repository;
+	private $classname;
 
 	private $index = array();
 
@@ -19,13 +24,18 @@ class EntityCollection implements Collection {
 
 	private $info = array();
 
-	public function __construct($type, Repository $repository, array $index, array $info = array(), $data = array()) {
+	public function __construct($type, $repository = null, array $index = null, array $info = array(), $data = array()) {
 		if(!in_array($type, array(EntityCollection::DN, EntityCollection::SEARCH))) {
 			throw new \InvalidArgumentException('Bad type of EntityCollection');
 		}
 
 		$this->type = $type;
-		$this->repository = $repository;
+		if(is_string($repository)) {
+			$this->classname = $repository;
+		} else {
+			$this->repository = $repository;
+			$this->classname = $this->repository->getClassName();
+		}
 		$this->info = $info;
 
 		if($type === EntityCollection::SEARCH) {
@@ -41,6 +51,9 @@ class EntityCollection implements Collection {
 	}
 
 	public function add($element) {
+		if(!is_object($element) || get_class($element) !== $this->classname) {
+			throw new InvalidEntityException('Cannot add entity of type ' . (is_object($element) ? get_class($element) : gettype($element)). ' to an EntityCollection of ' . $this->classname);
+		}
 		$this->index[] = $element->_getDn();
 		$this->data[] = $element;
 	}
@@ -129,5 +142,33 @@ class EntityCollection implements Collection {
 
 	public function count() {
 		return count($this->index);
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getClassname() {
+		return $this->classname;
+	}
+
+	/**
+	 * @param mixed $classname
+	 */
+	public function setClassname($classname) {
+		$this->classname = $classname;
+	}
+
+	/**
+	 * @return Repository
+	 */
+	public function getRepository() {
+		return $this->repository;
+	}
+
+	/**
+	 * @param Repository $repository
+	 */
+	public function setRepository($repository) {
+		$this->repository = $repository;
 	}
 }

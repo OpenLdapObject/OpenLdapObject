@@ -33,7 +33,7 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($people->getCn(), 'Pierre Deparis');
         $this->assertEquals($people->getGivenName(), 'Pierre');
         $this->assertEquals($people->getMail(), 'pierre.deparis@example.com');
-        $this->assertEquals($people->getTelephoneNumber(), array('03 00 00 00 01', '04 00 00 00 01'));
+        $this->assertEquals($people->getTelephoneNumber()->toArray(), array('03 00 00 00 01', '04 00 00 00 01'));
     }
 
     public function testFlush() {
@@ -81,5 +81,17 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
 
         $this->em->getClient()->update($org->_getDn(), array('member' => array($org->getMember()[0]->_getDn(), 'uid=youdi,ou=people,dc=example,dc=com')));
     }
+
+	public function testNewWithEntityCollection() {
+		$org = new Organisation();
+		$org->setCn('test');
+		$org->addMember($this->em->getRepository('\OpenLdapObject\Tests\Manager\People')->find('pdeparis'));
+
+		$this->em->persist($org);
+		$this->em->flush();
+
+		$this->em->remove($org);
+		$this->em->flush();
+	}
 }
  

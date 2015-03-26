@@ -37,11 +37,14 @@ class EntityBuilder {
     private static $setterVisibility = 'public';
     private static $getterTemplate = '<space><visibility> function get<column|capitalize>() {<eol><space><space>return $this-><column>;<eol><space>}<eol><eol>';
     private static $setterTemplate = '<space><visibility> function set<column|capitalize>($value) {<eol><space><space>$this-><column> = $value;<eol><space><space>return $this;<eol><space>}<eol><eol>';
-    private static $adderTemplate = '<space><visibility> function add<column|capitalize>($value) {<eol><space><space>$this-><column>[] = $value;<eol><space><space>return $this;<eol><space>}<eol><eol>';
-    private static $removerTemplate = '<space><visibility> function remove<column|capitalize>($value) {<eol><space><space>if(($key = array_search($value, $this-><column>)) !== false) {<eol><space><space><space>unset($this-><column>[$key]);<eol><space><space>}<eol><space><space>return $this;<eol><space>}<eol><eol>';
+    private static $adderTemplate = '<space><visibility> function add<column|capitalize>($value) {<eol><space><space>$this-><column>->add($value);<eol><space><space>return $this;<eol><space>}<eol><eol>';
+    private static $removerTemplate = '<space><visibility> function remove<column|capitalize>($value) {<eol><space><space>$this-><column>->removeElement($value);<eol><space><space>return $this;<eol><space>}<eol><eol>';
 
 
     private $className;
+	/**
+	 * @var EntityAnalyzer
+	 */
     private $analyzer;
 
     public function __construct($className) {
@@ -83,6 +86,62 @@ class EntityBuilder {
         file_put_contents($this->analyzer->getReflection()->getFileName(), implode('', $lines));
     }
 
+	public function regenerateGetterSetter() {
+		$methodList = $this->analyzer->listRequiredMethod();
+		$fileContent = file_get_contents($this->analyzer->getReflection()->getFileName());
+
+		foreach($methodList as $data) {
+			switch($data['type']) {
+				case EntityAnalyzer::GETTER:
+					$methodName = 'get' . Utils::capitalize($data['column']);
+					$fileContent = str_replace($this->getMethodSrc($methodName), $this->createGetter($data['column']), $fileContent);
+					break;
+				case EntityAnalyzer::SETTER:
+					$methodName = 'set' . Utils::capitalize($data['column']);
+					$fileContent = str_replace($this->getMethodSrc($methodName), $this->createSetter($data['column']), $fileContent);
+					break;
+				case EntityAnalyzer::ADDER:
+					$methodName = 'add' . Utils::capitalize($data['column']);
+					$fileContent = str_replace($this->getMethodSrc($methodName), $this->createAdder($data['column']), $fileContent);
+					break;
+				case EntityAnalyzer::REMOVER:
+					$methodName = 'remove' . Utils::capitalize($data['column']);
+					$fileContent = str_replace($this->getMethodSrc($methodName), $this->createRemover($data['column']), $fileContent);
+					break;
+			}
+		}
+
+		file_put_contents($this->analyzer->getReflection()->getFileName(), $fileContent);
+	}
+
+	public function cleanGetterSetter() {
+		$methodList = $this->analyzer->listRequiredMethod();
+		$fileContent = file_get_contents($this->analyzer->getReflection()->getFileName());
+
+		foreach($methodList as $data) {
+			switch($data['type']) {
+				case EntityAnalyzer::GETTER:
+					$methodName = 'get' . Utils::capitalize($data['column']);
+					$fileContent = str_replace($this->getMethodSrc($methodName), '', $fileContent);
+					break;
+				case EntityAnalyzer::SETTER:
+					$methodName = 'set' . Utils::capitalize($data['column']);
+					$fileContent = str_replace($this->getMethodSrc($methodName), '', $fileContent);
+					break;
+				case EntityAnalyzer::ADDER:
+					$methodName = 'add' . Utils::capitalize($data['column']);
+					$fileContent = str_replace($this->getMethodSrc($methodName), '', $fileContent);
+					break;
+				case EntityAnalyzer::REMOVER:
+					$methodName = 'remove' . Utils::capitalize($data['column']);
+					$fileContent = str_replace($this->getMethodSrc($methodName), '', $fileContent);
+					break;
+			}
+		}
+
+		file_put_contents($this->analyzer->getReflection()->getFileName(), $fileContent);
+	}
+
     public function createGetter($property) {
         return $this->buildMethod(self::$getterTemplate, self::$getterVisibility, $property);
     }
@@ -108,6 +167,22 @@ class EntityBuilder {
 
         return $template;
     }
+
+	public function getMethodSrc($methodName, $file = null) {
+		if(is_null($file)) {
+			$file = file($this->analyzer->getReflection()->getFileName());
+		}
+
+		try {
+			$startLine = $this->analyzer->getReflection()->getMethod($methodName)->getStartLine() - 1;
+			$endLine = $this->analyzer->getReflection()->getMethod($methodName)->getEndLine()+1;
+		} catch(\ReflectionException $e) {
+			return '';
+		}
+		$length = $endLine - $startLine;
+
+		return implode('', array_slice($file, $startLine, $length));
+	}
 }
 
 ?>

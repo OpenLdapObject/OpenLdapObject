@@ -37,7 +37,7 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase {
     public function testAdder() {
         $this->assertEquals($this->entityBuilder->createAdder('telephoneNumber'),
 '    public function addTelephoneNumber($value) {
-        $this->telephoneNumber[] = $value;
+        $this->telephoneNumber->add($value);
         return $this;
     }
 
@@ -47,9 +47,7 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase {
     public function testRemover() {
         $this->assertEquals($this->entityBuilder->createRemover('telephoneNumber'),
 '    public function removeTelephoneNumber($value) {
-        if(($key = array_search($value, $this->telephoneNumber)) !== false) {
-            unset($this->telephoneNumber[$key]);
-        }
+        $this->telephoneNumber->removeElement($value);
         return $this;
     }
 
@@ -60,5 +58,14 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase {
         $entityBuilder = new EntityBuilder('OpenLdapObject\Tests\Manager\People');
         $entityBuilder->completeEntity();
     }
+
+	public function test() {
+		$entityBuilder = new EntityBuilder('OpenLdapObject\Tests\Manager\People');
+		$this->assertEquals('    public function getUid() {
+        return $this->uid;
+    }
+
+', $entityBuilder->getMethodSrc('getUid'));
+	}
 }
  

@@ -27,10 +27,13 @@
 namespace OpenLdapObject\Manager\Hydrate;
 
 
+use OpenLdapObject\Annotations\Entity;
+use OpenLdapObject\Collection\ArrayCollection;
 use OpenLdapObject\Exception\InvalidHydrateException;
 use OpenLdapObject\Manager\EntityAnalyzer;
 use OpenLdapObject\Collection\EntityCollection;
 use OpenLdapObject\Manager\EntityManager;
+use OpenLdapObject\Tests\Manager\People;
 use OpenLdapObject\Utils;
 
 class Hydrater {
@@ -80,14 +83,18 @@ class Hydrater {
             }
 
             if($column[$keyLow]['type'] === 'array') {
-                $method = 'add' . Utils::capitalize($column[$keyLow]['realname']);
+               // $method = 'add' . Utils::capitalize($column[$keyLow]['realname']);
                 if(!is_array($value)) {
                     $data[$key] = array($value);
                     $value = array($value);
                 }
-                foreach($value as $e) {
-                    $entity->$method($e);
-                }
+				$property = $this->analyzer->getReflection()->getProperty($column[$keyLow]['realname']);
+				$isAccessible = $property->isPublic();
+				$property->setAccessible(true);
+				$property->setValue($entity, new ArrayCollection($value));
+				if(!$isAccessible) {
+					$property->setAccessible(false);
+				}
             } elseif($column[$keyLow]['type'] === 'entity') {
                 $multi = $this->analyzer->isEntityRelationMultiple($column[$keyLow]['realname']);
                 if($multi) {
@@ -129,10 +136,39 @@ class Hydrater {
             $method = 'get' . Utils::capitalize($key);
             $data[$key] = $entity->$method();
             if(is_null($data[$key])) $data[$key] = array();
+			if($data[$key] instanceof ArrayCollection) $data[$key] = $data[$key]->toArray();
         }
 
         return $data;
     }
+
+	public function defineCollection($entity) {
+		foreach($this->analyzer->listColumns() as $name => $info) {
+			switch($info['type']) {
+				case 'array':
+					$value = new ArrayCollection();
+					break;
+				case 'entity':
+					if($info['relation']['multi']) {
+						$value = new EntityCollection(EntityCollection::DN, $info['relation']['classname'], array());
+					} else {
+						$value = null;
+					}
+					break;
+				default:
+					$value = null;
+			}
+			if(!is_null($value)) {
+				$property = $this->analyzer->getReflection()->getProperty($name);
+				$isAccessible = $property->isPublic();
+				$property->setAccessible(true);
+				$property->setValue($entity, $value);
+				if(!$isAccessible) {
+					$property->setAccessible(false);
+				}
+			}
+		}
+	}
 }
 
 ?>
