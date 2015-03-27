@@ -30,8 +30,8 @@ namespace OpenLdapObject;
 use OpenLdapObject\Builder\EntityBuilder;
 
 class Console {
-    const VERSION = '1.1.0alpha';
-    const DATE = '2015-03-22';
+    const VERSION = '1.1.0alpha3';
+    const DATE = '2015-03-27';
 
     public function main($argc, array $argv) {
         if($argc > 1 && $argv[1] == 'generate') {
