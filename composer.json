@@ -1,9 +1,9 @@
 {
-    "name": "toshy62/openldapobject",
+    "name": "openldapobject/openldapobject",
     "type": "library",
     "keywords": ["openldap", "ldap", "object", "mapping"],
     "description": "Use Object to Read/Write in a LDAP",
-    "homepage": "https://github.com/Toshy62/OpenLdapObject",
+    "homepage": "https://github.com/OpenLdapObject/OpenLdapObject",
     "license": "MIT",
     "authors": [
         {
@@ -12,8 +12,8 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/Toshy62/OpenLdapObject/issues",
-        "source": "https://github.com/Toshy62/OpenLdapObject"
+        "issues": "https://github.com/OpenLdapObject/OpenLdapObject/issues",
+        "source": "https://github.com/OpenLdapObject/OpenLdapObject"
     },
     "autoload": {
         "psr-0": {
