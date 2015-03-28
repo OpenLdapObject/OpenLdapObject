@@ -1,5 +1,5 @@
 install:
-  - sudo add-apt-repository ppa:ondrej/php5
+  - sudo sh -c "echo 'deb http://ppa.launchpad.net/ondrej/php5/ubuntu trusty main\ndeb-src http://ppa.launchpad.net/ondrej/php5/ubuntu trusty main' > /etc/apt/sources.list.d/ondrej-php5-trusty.list"
   - sudo apt-get update
   - sudo apt-get install wget xz-utils default-jre ldap-utils php5-cli php5-ldap phpunit curl -y
   - wget http://apache.crihan.fr/dist//directory/apacheds/dist/2.0.0-M19/apacheds-2.0.0-M19-amd64.deb
