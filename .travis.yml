@@ -1,5 +1,6 @@
-language:
-  - php5.5
+language: php
+php:
+  - 5.4
 
 before_install:
   - sudo sh -c "echo 'extension=ldap.so' >> `php --ini | grep 'Loaded Configuration' | sed -e 's|.*:\s*||'`"
