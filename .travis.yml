@@ -7,7 +7,7 @@ install:
   - wget http://apache.crihan.fr/dist//directory/apacheds/dist/2.0.0-M19/apacheds-2.0.0-M19-amd64.deb
   - sudo dpkg -i apacheds-2.0.0-M19-amd64.deb
   - composer self-update
-  - cd /var/lib/apacheds-2.0.0-M19/; rm -rf default/; tar -xvf /root/default.tar.xz
+  - cd /var/lib/apacheds-2.0.0-M19/; sudo rm -rf default/; sudo tar -xvf /root/default.tar.xz
 
 script:
   - sudo tests/docker-test/run.sh 
