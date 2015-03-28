@@ -10,7 +10,7 @@ install:
   - sudo apt-get install wget xz-utils default-jre ldap-utils phpunit curl -y
   - wget http://apache.crihan.fr/dist//directory/apacheds/dist/2.0.0-M19/apacheds-2.0.0-M19-amd64.deb
   - sudo dpkg -i apacheds-2.0.0-M19-amd64.deb
-  - composer self-updae
+  - composer self-update
   - sudo rm -rf /var/lib/apacheds-2.0.0-M19/default
   - sudo tar -C /var/lib/apacheds-2.0.0-M19/ -xvf tests/docker-test/default.tar.xz
 
