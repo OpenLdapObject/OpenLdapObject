@@ -24,4 +24,4 @@ before_script:
   - "while ! docker info &> /dev/null ; do sleep 1; done"
 
 script:
-  - ./run-docker-test.sh
+  - sudo ./run-docker-test.sh
