@@ -11,4 +11,4 @@ install:
   - sudo tar -C /var/lib/apacheds-2.0.0-M19/ -xvf tests/docker-test/default.tar.xz
 
 script:
-  - sudo ./travis.sh
+  - ./travis.sh
