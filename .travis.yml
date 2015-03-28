@@ -1,14 +1,13 @@
+language:
+  - php
+
 install:
   - sudo apt-get update
-  - sudo mkdir -p /var/lib/docker
-  - echo exit 101 | sudo tee /usr/sbin/policy-rc.d
-  - sudo chmod +x /usr/sbin/policy-rc.d
-  - wget http://get.docker.io/ubuntu/pool/main/l/lxc-docker-1.4.1/lxc-docker-1.4.1_1.4.1_amd64.deb
-  - sudo dpkg -i lxc-docker-1.4.1_1.4.1_amd64.deb
-  - sudo apt-get install -f
-  - sudo apt-get install -y slirp lxc aufs-tools cgroup-lite
-  - curl -sLo linux https://github.com/jpetazzo/sekexe/raw/master/uml
-  - chmod +x linux
+  - apt-get install wget xz-utils default-jre ldap-utils php5-cli php5-ldap phpunit curl -y
+  - wget http://apache.crihan.fr/dist//directory/apacheds/dist/2.0.0-M19/apacheds-2.0.0-M19-amd64.deb
+  - dpkg -i apacheds-2.0.0-M19-amd64.deb
+  - composer self-update
+  - cd /var/lib/apacheds-2.0.0-M19/; rm -rf default/; tar -xvf /root/default.tar.xz
 
 script:
-  - ./linux quiet mem=2G rootfstype=hostfs rw eth0=slirp,,/usr/bin/slirp-fullbolt init=$(pwd)/run-docker-test.sh WORKDIR=$(pwd) HOME=$HOME
+  - sudo tests/docker-test/run.sh 
