@@ -27,8 +27,8 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
 
     public function testQuery() {
         $people = $this->em->getRepository('\OpenLdapObject\Tests\Manager\People')->find('pdeparis');
-
-        $this->assertEquals($people->getUid(), 'pdeparis');
+        
+	$this->assertEquals($people->getUid(), 'pdeparis');
         $this->assertEquals($people->getSn(), 'Deparis');
         $this->assertEquals($people->getCn(), 'Pierre Deparis');
         $this->assertEquals($people->getGivenName(), 'Pierre');
