@@ -2,7 +2,7 @@
 
 /opt/apacheds-2.0.0-M19/bin/apacheds start default
 
-sleep 15
+sleep 30
 
 ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f /root/data.ldif -w secret
 ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f /root/data.ldif -w secret

@@ -2,3 +2,4 @@ vendor/
 tests/OpenLdapObject/Tests/TestConfiguration.php
 .idea/
 composer.lock
+tests/docker-test/log/*
