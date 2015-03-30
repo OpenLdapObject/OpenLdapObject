@@ -1,9 +1,9 @@
 version: 1
 
-dn: dc=example,dc=com
-objectclass: top
-objectclass: domain
-dc: example
+dn: ou=people,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: people
 
 dn: uid=pdeparis,ou=people,dc=example,dc=com
 objectClass: top
@@ -18,6 +18,32 @@ ou: cn=state,ou=organisation,dc=example,dc=com
 telephoneNumber: 03 00 00 00 01
 telephoneNumber: 04 00 00 00 01
 uid: pdeparis
+
+dn: uid=jdoe,ou=people,dc=example,dc=com
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: John Doe
+sn: Doe
+givenname: John
+givenname: Peter
+mail: john.doe@example.com
+telephoneNumber: 03 00 00 00 02
+telephoneNumber: 04 00 00 00 02
+uid: jdoe
+
+dn: cn=state,ou=organisation,dc=example,dc=com
+objectClass: top
+objectClass: groupOfNames
+cn: state
+member: uid=pdeparis,ou=people,dc=example,dc=com
+member: uid=mdupont,ou=people,dc=example,dc=com
+
+dn: dc=example,dc=com
+objectclass: top
+objectclass: domain
+dc: example
 
 dn: cn=bad,ou=organisation,dc=example,dc=com
 objectClass: top
@@ -45,16 +71,4 @@ ou: cn=state,ou=organisation,dc=example,dc=com
 telephoneNumber: 03 00 00 00 00
 telephoneNumber: 04 00 00 00 00
 uid: mdupont
-
-dn: cn=state,ou=organisation,dc=example,dc=com
-objectClass: top
-objectClass: groupOfNames
-cn: state
-member: uid=pdeparis,ou=people,dc=example,dc=com
-member: uid=mdupont,ou=people,dc=example,dc=com
-
-dn: ou=people,dc=example,dc=com
-objectClass: top
-objectClass: organizationalUnit
-ou: people
 

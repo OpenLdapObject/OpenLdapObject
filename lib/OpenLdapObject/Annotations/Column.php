@@ -35,10 +35,14 @@ class Column implements Annotation {
     private static $listType = array('string', 'array', 'entity');
 
     public $type;
+	public $strict = true;
 
     public function check() {
         if(!in_array($this->type, self::$listType)) {
             throw new InvalidAnnotationException($this, $this->type, $this->type . ' is not a valid type . (' . implode(',', self::$listType) . ')');
         }
+		if(!is_bool($this->strict)) {
+			throw new InvalidAnnotationException($this, $this->strict, 'strict is not boolean.');
+		}
     }
 }

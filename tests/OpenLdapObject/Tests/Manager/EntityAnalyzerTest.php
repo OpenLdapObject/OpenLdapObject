@@ -16,12 +16,12 @@ class EntityAnalyzerTest extends \PHPUnit_Framework_TestCase {
 
     public function testListField() {
         $this->assertEquals($this->entityAnalyzer->listColumns(), array(
-            'uid' => array('type' => 'string', 'index' => true),
-            'cn' => array('type' => 'string', 'index' => false),
-            'sn' => array('type' => 'string', 'index' => false),
-            'givenName' => array('type' => 'string', 'index' => false),
-            'mail' => array('type' => 'string', 'index' => false),
-            'telephoneNumber' => array('type' => 'array', 'index' => false)
+            'uid' => array('type' => 'string', 'index' => true, 'strict' => true),
+            'cn' => array('type' => 'string', 'index' => false, 'strict' => true),
+            'sn' => array('type' => 'string', 'index' => false, 'strict' => true),
+            'givenName' => array('type' => 'string', 'index' => false, 'strict' => true),
+            'mail' => array('type' => 'string', 'index' => false, 'strict' => true),
+            'telephoneNumber' => array('type' => 'array', 'index' => false, 'strict' => true)
             )
         );
     }

@@ -102,7 +102,8 @@ class EntityAnalyzer {
             if(($columnAnnotation = self::haveAnnotation(self::$ColumnAnnotation, $propertyAnnotation)) !== false) {
                 $columnAnnotation->check();
                 $column = array(
-                    'type' => $columnAnnotation->type
+                    'type' => $columnAnnotation->type,
+					'strict' => $columnAnnotation->strict
                 );
                 // Check the property has an Index Annotation
                 if(($indexAnnotation = self::haveAnnotation(self::$IndexAnnotation, $propertyAnnotation)) !== false) {

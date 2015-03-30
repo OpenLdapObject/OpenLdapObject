@@ -79,7 +79,12 @@ class Hydrater {
             }
 
             if(is_array($value) && $column[$keyLow]['type'] === 'string') {
-                throw new InvalidHydrateException('Column ' . $key . ' define as a string but data is array');
+				if(!$column[$keyLow]['strict']) {
+					// If is not strict, given the first element of the array
+					$value = reset($value);
+				} else {
+					throw new InvalidHydrateException('Column ' . $key . ' define as a string but data is array');
+				}
             }
 
             if($column[$keyLow]['type'] === 'array') {

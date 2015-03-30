@@ -93,5 +93,18 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
 		$this->em->remove($org);
 		$this->em->flush();
 	}
+
+	/**
+	 * @expectedException OpenLdapObject\Exception\InvalidHydrateException
+	 */
+	public function testWithStrict() {
+		$user = $this->em->getRepository('\OpenLdapObject\Tests\Manager\People')->find('jdoe');
+	}
+
+	public function testWithNoStrict() {
+		$user = $this->em->getRepository('\OpenLdapObject\Tests\Manager\PeopleNonStrict')->find('jdoe');
+
+		$this->assertEquals($user->getGivenName(), 'John');
+	}
 }
  

@@ -16,8 +16,8 @@ class EntityAnalyzerRelationTest extends \PHPUnit_Framework_TestCase {
 
     public function testListField() {
         $this->assertEquals($this->entityAnalyzer->listColumns(), array(
-            'cn' => array('type' => 'string', 'index' => true),
-            'member' => array('type' => 'entity', 'index' => false, 'relation' => array('classname' => 'OpenLdapObject\Tests\Manager\People', 'multi' => true))
+            'cn' => array('type' => 'string', 'index' => true, 'strict' => true),
+            'member' => array('type' => 'entity', 'index' => false, 'strict' => true, 'relation' => array('classname' => 'OpenLdapObject\Tests\Manager\People', 'multi' => true))
             )
         );
     }
