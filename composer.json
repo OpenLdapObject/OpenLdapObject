@@ -24,9 +24,10 @@
     "require": {
         "php": ">=5.4.0",
         "ext-ldap": "*",
-        "doctrine/annotations": "~1.0"
+        "doctrine/annotations": "~1.0",
+        "ulrichsg/getopt-php": "2.3.*"
     },
     "bin": [
-        "lib/OpenLdapObject/OpenLdapObject.php"
+        "lib/OpenLdapObject/generate-entity.php"
     ]
 }
