@@ -25,6 +25,7 @@
  */
 
 namespace OpenLdapObject\Manager;
+
 use Doctrine\Common\Annotations\AnnotationReader;
 use OpenLdapObject\Annotations\Annotation;
 use OpenLdapObject\Annotations\AnnotationManager;

@@ -26,14 +26,11 @@
 
 namespace OpenLdapObject\Manager\Hydrate;
 
-
-use OpenLdapObject\Annotations\Entity;
 use OpenLdapObject\Collection\ArrayCollection;
 use OpenLdapObject\Exception\InvalidHydrateException;
 use OpenLdapObject\Manager\EntityAnalyzer;
 use OpenLdapObject\Collection\EntityCollection;
 use OpenLdapObject\Manager\EntityManager;
-use OpenLdapObject\Tests\Manager\People;
 use OpenLdapObject\Utils;
 
 class Hydrater {
