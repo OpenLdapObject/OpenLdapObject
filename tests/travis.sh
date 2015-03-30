@@ -2,9 +2,13 @@
 
 sudo /opt/apacheds-2.0.0-M19/bin/apacheds start default
 
-sleep 10
+STATUS=0
+while [ "$STATUS" != "1" ];
+do
+    sleep 1;
+    STATUS=$(sudo netstat -lapute | grep "10389" | wc -l);
+done
 
-sudo ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f tests/docker-test/data.ldif -w secret
 sudo ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f tests/docker-test/data.ldif -w secret
 sudo ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f tests/docker-test/data.ldif -w secret
 sudo ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f tests/docker-test/data.ldif -w secret

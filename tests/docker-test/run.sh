@@ -2,7 +2,12 @@
 
 /opt/apacheds-2.0.0-M19/bin/apacheds start default
 
-sleep 30
+STATUS=0
+while [ "$STATUS" != "1" ];
+do
+    sleep 1;
+    STATUS=$(netstat -lapute | grep "10389" | wc -l);
+done
 
 ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f /root/data.ldif -w secret
 ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f /root/data.ldif -w secret
