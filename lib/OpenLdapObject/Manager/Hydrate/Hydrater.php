@@ -31,6 +31,7 @@ use OpenLdapObject\Exception\InvalidHydrateException;
 use OpenLdapObject\Manager\EntityAnalyzer;
 use OpenLdapObject\Collection\EntityCollection;
 use OpenLdapObject\Manager\EntityManager;
+use OpenLdapObject\OpenLdapObject;
 use OpenLdapObject\Utils;
 
 class Hydrater {
@@ -76,7 +77,7 @@ class Hydrater {
             }
 
             if(is_array($value) && $column[$keyLow]['type'] === 'string') {
-				if(!$column[$keyLow]['strict']) {
+				if(!$column[$keyLow]['strict'] || !OpenLdapObject::isStrict()) {
 					// If is not strict, given the first element of the array
 					$value = reset($value);
 				} else {

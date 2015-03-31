@@ -24,17 +24,50 @@
  *
  */
 
-namespace OpenLdapObject\Command;
+namespace OpenLdapObject;
 
+/**
+ * Class OpenLdapObject
+ *
+ * Information and configuration about the library
+ *
+ * @package OpenLdapObject
+ */
+abstract class OpenLdapObject {
+	/**
+	 * ID Version
+	 */
+	const VERSION = '1.1.0dev';
+	/**
+	 * Release Date
+	 */
+	const DATE = '31/03/2015';
 
-use OpenLdapObject\Builder\EntityBuilder;
+	/**
+	 * True if the global strict mode is enable
+	 * @var bool enable/disable
+	 */
+	private static $strict = true;
 
-class CleanCommand extends GenerateCommand {
-    protected function generate($className) {
-        echo 'Clean entity...' . PHP_EOL;
-        $builder = new EntityBuilder($className);
-        $builder->cleanGetterSetter();
+	/**
+	 * Check if the global strict mode is enable
+	 * @return bool
+	 */
+	public static function isStrict() {
+		return self::$strict;
+	}
 
-        echo 'Entity is clean.' . PHP_EOL;
-    }
-} 
+	/**
+	 * Enable the global strict mode
+	 */
+	public static function enableStrictMode() {
+		self::$strict = true;
+	}
+
+	/**
+	 * Disable the global strict mode
+	 */
+	public static function disableStrictMode() {
+		self::$strict = false;
+	}
+}

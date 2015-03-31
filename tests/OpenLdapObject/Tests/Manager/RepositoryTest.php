@@ -5,6 +5,7 @@ namespace OpenLdapObject\Tests\Manager;
 
 use OpenLdapObject\LdapClient\Connection;
 use OpenLdapObject\Manager\EntityManager;
+use OpenLdapObject\OpenLdapObject;
 
 class RepositoryTest extends \PHPUnit_Framework_TestCase {
     /**
@@ -105,6 +106,14 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
 		$user = $this->em->getRepository('\OpenLdapObject\Tests\Manager\PeopleNonStrict')->find('jdoe');
 
 		$this->assertEquals($user->getGivenName(), 'John');
+	}
+
+	public function testWithDisableGlobalStrict() {
+		OpenLdapObject::disableStrictMode();
+		$user = $this->em->getRepository('\OpenLdapObject\Tests\Manager\People')->find('jdoe');
+
+		$this->assertEquals($user->getGivenName(), 'John');
+		OpenLdapObject::enableStrictMode();
 	}
 }
  
