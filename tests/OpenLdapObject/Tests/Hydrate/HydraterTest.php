@@ -40,7 +40,8 @@ class HydraterTest extends \PHPUnit_Framework_TestCase {
             'cn' => array(),
             'sn' => array(),
             'givenName' => array(),
-            'mail' => array()
+            'mail' => array(),
+			'objectclass' => array('inetOrgPerson', 'organizationalPerson', 'person', 'top')
         ));
     }
 }

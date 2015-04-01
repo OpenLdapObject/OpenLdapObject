@@ -25,6 +25,7 @@
  */
 
 namespace OpenLdapObject\LdapClient;
+use OpenLdapObject\Exception\LdapException;
 
 /**
  * Class Connection
@@ -102,7 +103,7 @@ class Client {
 
     public function create($dn, $content) {
         if(!@ldap_add($this->connect, $dn, $content)) {
-            echo ldap_error($this->connect);
+            throw new LdapException(ldap_error($this->connect));
             return false;
         }
         return true;
@@ -110,7 +111,7 @@ class Client {
 
     public function delete($dn) {
         if(!@ldap_delete($this->connect, $dn)) {
-            echo ldap_error($this->connect);
+			throw new LdapException(ldap_error($this->connect));
             return false;
         }
         return true;
@@ -121,7 +122,7 @@ class Client {
         unset($parent[0]);
         $parentDn = implode(',', $parent);
         if(!@ldap_rename($this->connect, $oldDn, $newDn, $parentDn, true)) {
-            echo ldap_error($this->connect);
+			throw new LdapException(ldap_error($this->connect));
             return false;
         }
         return true;
@@ -129,7 +130,7 @@ class Client {
 
     public function update($dn, $data) {
         if(!@ldap_modify($this->connect, $dn, $data)) {
-            echo ldap_error($this->connect);
+			throw new LdapException(ldap_error($this->connect));
             return false;
         }
         return true;

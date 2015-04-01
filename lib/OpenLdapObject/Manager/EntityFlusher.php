@@ -77,6 +77,7 @@ class EntityFlusher {
         foreach($analyzer->listColumns() as $name => $data) {
             $originName[strtolower($name)] = $name;
         }
+		$originName['objectclass'] = 'objectclass';
 
         $currentData = $hydrater->getData($entity);
 
@@ -147,8 +148,6 @@ class EntityFlusher {
     private function create($entity, $currentData, $diff, EntityAnalyzer $analyzer) {
         $dn = $this->getNewDn($entity, $currentData, $analyzer);
         $entity->_setDn($dn);
-
-        $diff['objectclass'] = $analyzer->getObjectclass();
 
         $this->em->getClient()->create($dn, $diff);
     }

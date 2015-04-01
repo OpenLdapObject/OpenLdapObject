@@ -25,6 +25,7 @@
  */
 
 namespace OpenLdapObject;
+use OpenLdapObject\Collection\ArrayCollection;
 use OpenLdapObject\Manager\EntityCollection;
 use OpenLdapObject\Manager\Hydrate\Hydrater;
 
@@ -36,9 +37,17 @@ abstract class Entity {
     private $_dn;
     private $_originData;
 
+	/**
+	 * @var ArrayCollection
+	 */
+	private $objectClass;
+
 	public function __construct() {
+		$this->objectClass = new ArrayCollection();
+
 		$hydrater = new Hydrater(get_class($this));
 		$hydrater->defineCollection($this);
+		$hydrater->defineObjectClass($this);
 	}
 
     public final function _setDn($dn) {
@@ -56,4 +65,18 @@ abstract class Entity {
     public final function _getOriginData() {
         return $this->_originData;
     }
+
+	public function getObjectClass() {
+		return $this->objectClass;
+	}
+
+	public function addObjectClass($objectClass) {
+		$this->objectClass->add($objectClass);
+		return $this;
+	}
+
+	public function removeObjectClass($objectClass) {
+		$this->objectClass->remove($objectClass);
+		return $this;
+	}
 } 

@@ -27,6 +27,7 @@
 namespace OpenLdapObject\Manager\Hydrate;
 
 use OpenLdapObject\Collection\ArrayCollection;
+use OpenLdapObject\Entity;
 use OpenLdapObject\Exception\InvalidHydrateException;
 use OpenLdapObject\Manager\EntityAnalyzer;
 use OpenLdapObject\Collection\EntityCollection;
@@ -131,7 +132,7 @@ class Hydrater {
      * @param $entity
      * @return array
      */
-    public function getData($entity) {
+    public function getData(Entity $entity) {
         $column = $this->analyzer->listColumns();
         $data = array();
 
@@ -142,10 +143,12 @@ class Hydrater {
 			if($data[$key] instanceof ArrayCollection) $data[$key] = $data[$key]->toArray();
         }
 
+		$data['objectclass'] = $entity->getObjectClass()->toArray();
+
         return $data;
     }
 
-	public function defineCollection($entity) {
+	public function defineCollection(Entity $entity) {
 		foreach($this->analyzer->listColumns() as $name => $info) {
 			switch($info['type']) {
 				case 'array':
@@ -170,6 +173,13 @@ class Hydrater {
 					$property->setAccessible(false);
 				}
 			}
+		}
+	}
+
+	public function defineObjectClass(Entity $entity) {
+		$classAnnotation = $this->analyzer->getClassAnnotation();
+		foreach($classAnnotation['objectclass'] as $objectClass) {
+			$entity->addObjectClass($objectClass);
 		}
 	}
 }

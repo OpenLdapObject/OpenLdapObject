@@ -115,5 +115,23 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals($user->getGivenName(), 'John');
 		OpenLdapObject::enableStrictMode();
 	}
+
+	public function testAddWithObjectClass() {
+		$org = new Organisation();
+		$org->setCn('organisation')
+			->addObjectClass('labeledUriObject')
+		    ->addMember($this->em->getRepository('\OpenLdapObject\Tests\Manager\People')->find('pdeparis'));
+
+		$this->assertEquals($org->getObjectClass()->toArray(), array('groupOfNames', 'top', 'labeledUriObject'));
+
+		$this->em->persist($org);
+		$this->em->flush();
+/*
+		$structure = $this->em->getRepository('\OpenLdapObject\Tests\Manager\Organisation')->find('organisation');
+		$this->assertEquals($org->getObjectClass(), array('groupOfNames', 'top', 'organizationalUnit'));
+
+		$this->em->remove($structure);
+		$this->em->flush();*/
+	}
 }
  
