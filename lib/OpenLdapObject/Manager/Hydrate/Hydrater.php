@@ -74,7 +74,12 @@ class Hydrater {
             $keyLow = strtolower($key);
 
             if(!array_key_exists($keyLow, $column)) {
-                continue;
+				if($keyLow === 'objectclass') {
+					foreach($value as $objectClass) {
+						if(!$entity->getObjectClass()->contains($objectClass)) $entity->addObjectClass($objectClass);
+					}
+				}
+				continue;
             }
 
             if(is_array($value) && $column[$keyLow]['type'] === 'string') {

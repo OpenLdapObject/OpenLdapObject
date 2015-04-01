@@ -126,12 +126,12 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
 
 		$this->em->persist($org);
 		$this->em->flush();
-/*
+
 		$structure = $this->em->getRepository('\OpenLdapObject\Tests\Manager\Organisation')->find('organisation');
-		$this->assertEquals($org->getObjectClass(), array('groupOfNames', 'top', 'organizationalUnit'));
+		$this->assertEquals($structure->getObjectClass()->toArray(), array('groupOfNames', 'top', 'labeledUriObject'));
 
 		$this->em->remove($structure);
-		$this->em->flush();*/
+		$this->em->flush();
 	}
 }
  

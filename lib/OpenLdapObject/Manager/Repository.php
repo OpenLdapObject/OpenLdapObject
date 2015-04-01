@@ -50,7 +50,7 @@ class Repository {
     }
 
     private function query($query, $limit = 0) {
-        $result = $this->em->getClient()->search($query, $this->columns, $limit, $this->baseDn);
+        $result = $this->em->getClient()->search($query, array_merge($this->columns, array('objectclass')), $limit, $this->baseDn);
         return $this->manage($result);
     }
 
