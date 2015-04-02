@@ -57,7 +57,7 @@ if($getOpt->getOption('help')) {
     echo $getOpt->getHelpText();
 } else if($getOpt->getOption('version')) {
     echo 'Version '.\OpenLdapObject\OpenLdapObject::VERSION.' ('.\OpenLdapObject\OpenLdapObject::DATE.')' . PHP_EOL;
-} else {
+} else if($getOpt->getOption('entity')) {
     if($getOpt->getOption('regenerate')) {
         $command = new \OpenLdapObject\Command\ReGenerateCommand($getOpt->getOptions());
     } elseif($getOpt->getOption('clean')) {
@@ -67,5 +67,7 @@ if($getOpt->getOption('help')) {
     }
 
     $command->exec();
+} else {
+	echo $getOpt->getHelpText();
 }
 ?>
