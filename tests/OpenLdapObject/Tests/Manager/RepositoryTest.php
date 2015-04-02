@@ -83,6 +83,13 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->em->getClient()->update($org->_getDn(), array('member' => array($org->getMember()[0]->_getDn(), 'uid=youdi,ou=people,dc=example,dc=com')));
     }
 
+	public function testRelationSingle() {
+		$org = $this->em->getRepository('\OpenLdapObject\Tests\Manager\OrganisationSingle')->find('single-member');
+
+		$this->assertEquals(get_class($org->getMember()), 'OpenLdapObject\Tests\Manager\People');
+		$this->assertEquals($org->getMember()->getUid(), 'mdupont');
+	}
+
 	public function testNewWithEntityCollection() {
 		$org = new Organisation();
 		$org->setCn('test');

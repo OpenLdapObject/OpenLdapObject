@@ -1,9 +1,24 @@
 version: 1
 
-dn: ou=people,dc=example,dc=com
+dn: uid=mdupont,ou=people,dc=example,dc=com
 objectClass: top
-objectClass: organizationalUnit
-ou: people
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: Mathieu Dupont
+sn: Dupont
+givenName: Mathieu
+mail: mathieu.dupont@example.com
+ou: cn=state,ou=organisation,dc=example,dc=com
+telephoneNumber: 03 00 00 00 00
+telephoneNumber: 04 00 00 00 00
+uid: mdupont
+
+dn: cn=single-member,ou=organisation,dc=example,dc=com
+objectClass: top
+objectClass: groupOfNames
+cn: single-member
+member: uid=mdupont,ou=people,dc=example,dc=com
 
 dn: uid=pdeparis,ou=people,dc=example,dc=com
 objectClass: top
@@ -19,6 +34,24 @@ telephoneNumber: 03 00 00 00 01
 telephoneNumber: 04 00 00 00 01
 uid: pdeparis
 
+dn: ou=organisation,dc=example,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: groups
+ou: organisation
+
+dn: cn=state,ou=organisation,dc=example,dc=com
+objectClass: top
+objectClass: groupOfNames
+cn: state
+member: uid=pdeparis,ou=people,dc=example,dc=com
+member: uid=mdupont,ou=people,dc=example,dc=com
+
+dn: dc=example,dc=com
+objectclass: top
+objectclass: domain
+dc: example
+
 dn: uid=jdoe,ou=people,dc=example,dc=com
 objectClass: top
 objectClass: inetOrgPerson
@@ -33,18 +66,6 @@ telephoneNumber: 03 00 00 00 02
 telephoneNumber: 04 00 00 00 02
 uid: jdoe
 
-dn: cn=state,ou=organisation,dc=example,dc=com
-objectClass: top
-objectClass: groupOfNames
-cn: state
-member: uid=pdeparis,ou=people,dc=example,dc=com
-member: uid=mdupont,ou=people,dc=example,dc=com
-
-dn: dc=example,dc=com
-objectclass: top
-objectclass: domain
-dc: example
-
 dn: cn=bad,ou=organisation,dc=example,dc=com
 objectClass: top
 objectClass: groupOfNames
@@ -52,23 +73,8 @@ cn: bad
 member: uid=mdupont,ou=people,dc=example,dc=com
 member: uid=youdi,ou=people,dc=example,dc=com
 
-dn: ou=organisation,dc=example,dc=com
+dn: ou=people,dc=example,dc=com
 objectClass: top
 objectClass: organizationalUnit
-ou: groups
-ou: organisation
-
-dn: uid=mdupont,ou=people,dc=example,dc=com
-objectClass: top
-objectClass: inetOrgPerson
-objectClass: person
-objectClass: organizationalPerson
-cn: Mathieu Dupont
-sn: Dupont
-givenName: Mathieu
-mail: mathieu.dupont@example.com
-ou: cn=state,ou=organisation,dc=example,dc=com
-telephoneNumber: 03 00 00 00 00
-telephoneNumber: 04 00 00 00 00
-uid: mdupont
+ou: people
 

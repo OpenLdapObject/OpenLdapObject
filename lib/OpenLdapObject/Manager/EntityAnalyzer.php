@@ -212,8 +212,12 @@ class EntityAnalyzer {
                     $methodList['set' . Utils::Capitalize($name)] = array('type' => self::SETTER, 'column' => $name);
                     break;
                 case 'entity':
-                    $methodList['add' . Utils::Capitalize($name)] = array('type' => self::ADDER, 'column' => $name);
-                    $methodList['remove' . Utils::Capitalize($name)] = array('type' => self::REMOVER, 'column' => $name);
+					if($schema['relation']['multi']) {
+						$methodList['add' . Utils::Capitalize($name)] = array('type' => self::ADDER, 'column' => $name);
+						$methodList['remove' . Utils::Capitalize($name)] = array('type' => self::REMOVER, 'column' => $name);
+					} else {
+						$methodList['set' . Utils::Capitalize($name)] = array('type' => self::SETTER, 'column' => $name);
+					}
                     break;
             }
         }

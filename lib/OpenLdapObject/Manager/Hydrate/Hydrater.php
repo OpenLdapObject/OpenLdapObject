@@ -121,7 +121,7 @@ class Hydrater {
                     }
                 } else {
                     $method = 'set' . Utils::capitalize($column[$keyLow]['realname']);
-                    $entity->$method($this->repository->read($value));
+                    $entity->$method($this->em->getRepository($column[$keyLow]['relation']['classname'])->read($value));
                 }
             } else {
                 $method = 'set' . Utils::capitalize($column[$keyLow]['realname']);
