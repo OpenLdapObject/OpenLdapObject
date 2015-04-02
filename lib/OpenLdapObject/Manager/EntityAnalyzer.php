@@ -202,21 +202,19 @@ class EntityAnalyzer {
         $methodList = array();
 
         foreach($columns as $name => $schema) {
-            $methodList['get' . Utils::capitalize($name)] = array('type' => self::GETTER, 'column' => $name);
+			$this->methodGetter($methodList, $name);
             switch($schema['type']) {
                 case 'array':
-                    $methodList['add' . Utils::Capitalize($name)] = array('type' => self::ADDER, 'column' => $name);
-                    $methodList['remove' . Utils::Capitalize($name)] = array('type' => self::REMOVER, 'column' => $name);
+                    $this->methodAdderRemover($methodList, $name);
                     break;
                 case 'string':
-                    $methodList['set' . Utils::Capitalize($name)] = array('type' => self::SETTER, 'column' => $name);
+					$this->methodSetter($methodList, $name);
                     break;
                 case 'entity':
 					if($schema['relation']['multi']) {
-						$methodList['add' . Utils::Capitalize($name)] = array('type' => self::ADDER, 'column' => $name);
-						$methodList['remove' . Utils::Capitalize($name)] = array('type' => self::REMOVER, 'column' => $name);
+						$this->methodAdderRemover($methodList, $name);
 					} else {
-						$methodList['set' . Utils::Capitalize($name)] = array('type' => self::SETTER, 'column' => $name);
+						$this->methodSetter($methodList, $name);
 					}
                     break;
             }
@@ -282,4 +280,17 @@ class EntityAnalyzer {
         }
         return false;
     }
+
+	protected function methodGetter(array &$methodList, $name) {
+		$methodList['get' . Utils::capitalize($name)] = array('type' => self::GETTER, 'column' => $name);
+	}
+
+	protected function methodAdderRemover(array &$methodList, $name) {
+		$methodList['add' . Utils::Capitalize($name)] = array('type' => self::ADDER, 'column' => $name);
+		$methodList['remove' . Utils::Capitalize($name)] = array('type' => self::REMOVER, 'column' => $name);
+	}
+
+	protected function methodSetter(array &$methodList, $name) {
+		$methodList['set' . Utils::Capitalize($name)] = array('type' => self::SETTER, 'column' => $name);
+	}
 }
