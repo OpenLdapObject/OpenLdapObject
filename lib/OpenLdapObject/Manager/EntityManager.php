@@ -38,12 +38,12 @@ class EntityManager {
     private $toPersistEntity = array();
     private $toRemoveEntity = array();
 
-    public static function addEntityManager($name, Client $client) {
+    public static function addEntityManager($name, Client $client, $ignore = false) {
         if(!is_string($name)) {
             throw new \InvalidArgumentException('$name must be a string');
         }
 
-        if(array_key_exists($name, self::$availableManager)) {
+        if(array_key_exists($name, self::$availableManager) && !$ignore) {
             throw new \InvalidArgumentException('A "'.$name.'" manager already defined');
         }
 
