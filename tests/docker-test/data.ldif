@@ -73,6 +73,14 @@ cn: bad
 member: uid=mdupont,ou=people,dc=example,dc=com
 member: uid=youdi,ou=people,dc=example,dc=com
 
+dn: cn=bad-relation,ou=organisation,dc=example,dc=com
+objectClass: top
+objectClass: groupOfNames
+cn: bad-relation
+member: uid=pdeparis,ou=people,dc=example,dc=com
+member: uid=not-exist,ou=people,dc=example,dc=com
+member: uid=mdupont,ou=people,dc=example,dc=com
+
 dn: ou=people,dc=example,dc=com
 objectClass: top
 objectClass: organizationalUnit

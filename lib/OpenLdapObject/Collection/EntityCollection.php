@@ -2,6 +2,7 @@
 
 namespace OpenLdapObject\Collection;
 
+use OpenLdapObject\Exception\BadRelationException;
 use OpenLdapObject\Exception\InvalidEntityException;
 use OpenLdapObject\Manager\Repository;
 
@@ -23,6 +24,8 @@ class EntityCollection implements Collection {
 	private $data = array();
 
 	private $info = array();
+
+	private $mustQueryBefore = false;
 
 	public function __construct($type, $repository = null, array $index = null, array $info = array(), $data = array()) {
 		if(!in_array($type, array(EntityCollection::DN, EntityCollection::SEARCH))) {
@@ -48,9 +51,35 @@ class EntityCollection implements Collection {
 
 		$this->index = $index;
 		$this->data = $data;
+
+		// Case: ignore_errors => true, we search all results at the first query
+		if(array_key_exists('ignore_errors', $this->info) && $this->info['ignore_errors'] === true)
+			$this->mustQueryBefore = true;
+	}
+
+	private function checkMustQueryBefore() {
+		if(!$this->mustQueryBefore) return;
+
+		$cleanIndex = array();
+		$cleanData = array();
+
+		foreach($this->index as $index) {
+			$data = $this->repository->read($index);
+			if($data !== false) {
+				$cleanIndex[] = $index;
+				$cleanData[] = $data;
+			}
+		}
+
+		$this->index = $cleanIndex;
+		$this->data = $cleanData;
+
+		$this->mustQueryBefore = false;
 	}
 
 	public function add($element) {
+		$this->checkMustQueryBefore();
+
 		if(!is_object($element) || get_class($element) !== $this->classname) {
 			throw new InvalidEntityException('Cannot add entity of type ' . (is_object($element) ? get_class($element) : gettype($element)). ' to an EntityCollection of ' . $this->classname);
 		}
@@ -68,24 +97,35 @@ class EntityCollection implements Collection {
 	}
 
 	public function containsKey($key) {
+		$this->checkMustQueryBefore();
+
 		return array_key_exists($key, $this->index);
 	}
 
 	public function get($key) {
+		$this->checkMustQueryBefore();
+
 		if(!array_key_exists($key, $this->index)) {
 			throw new \OutOfBoundsException($key);
 		}
 		if(!array_key_exists($key, $this->data)) {
 			$this->data[$key] = $this->repository->read($this->index[$key]);
 		}
+		if($this->data[$key] === false) {
+			throw new BadRelationException('Not found entry: ' . $this->index[$key]);
+		}
 		return $this->data[$key];
 	}
 
 	public function isEmpty() {
+		$this->checkMustQueryBefore();
+
 		return $this->count() < 1;
 	}
 
 	public function indexOf($element) {
+		$this->checkMustQueryBefore();
+
 		foreach($this as $key => $value) {
 			if($value === $element) {
 				return $key;
@@ -95,11 +135,15 @@ class EntityCollection implements Collection {
 	}
 
 	public function remove($key) {
+		$this->checkMustQueryBefore();
+
 		unset($this->index[$key]);
 		unset($this->data[$key]);
 	}
 
 	public function removeElement($element) {
+		$this->checkMustQueryBefore();
+
 		foreach($this as $key => $value) {
 			if($element === $value) {
 				$this->remove($key);
@@ -108,11 +152,15 @@ class EntityCollection implements Collection {
 	}
 
 	public function set($key, $value) {
+		$this->checkMustQueryBefore();
+
 		$this->index[$key] = $value->_getDn();
 		$this->data[$key] = $value;
 	}
 
 	public function toArray() {
+		$this->checkMustQueryBefore();
+
 		$array = array();
 		foreach($this->index as $key => $dn) {
 			$array[$key] = $this->get($key);
@@ -121,6 +169,8 @@ class EntityCollection implements Collection {
 	}
 
 	public function getIterator() {
+		$this->checkMustQueryBefore();
+
 		return new \ArrayIterator($this->toArray());
 	}
 
@@ -141,6 +191,7 @@ class EntityCollection implements Collection {
 	}
 
 	public function count() {
+		$this->checkMustQueryBefore();
 		return count($this->index);
 	}
 

@@ -115,7 +115,7 @@ class Hydrater {
                         $data[$key] = array($value);
                         $value = array($value);
                     }
-                    $property->setValue($entity, new EntityCollection(EntityCollection::DN, $this->em->getRepository($column[$keyLow]['relation']['classname']), $value));
+                    $property->setValue($entity, new EntityCollection(EntityCollection::DN, $this->em->getRepository($column[$keyLow]['relation']['classname']), $value, array('ignore_errors' => $column[$keyLow]['relation']['ignore_errors'])));
                     if(!$isAccessible) {
                         $property->setAccessible(false);
                     }
@@ -161,7 +161,7 @@ class Hydrater {
 					break;
 				case 'entity':
 					if($info['relation']['multi']) {
-						$value = new EntityCollection(EntityCollection::DN, $info['relation']['classname'], array());
+						$value = new EntityCollection(EntityCollection::DN, $info['relation']['classname'], array(), array('ignore_errors' => $info['relation']['ignore_errors']));
 					} else {
 						$value = null;
 					}

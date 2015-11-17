@@ -131,7 +131,8 @@ class EntityAnalyzer {
 
                         $column['relation'] = array(
                             'classname' => $relationAnnotation->classname,
-                            'multi' => $relationAnnotation->multi
+                            'multi' => $relationAnnotation->multi,
+							'ignore_errors' => $relationAnnotation->ignore_errors
                         );
                     } else {
                         throw new InvalidAnnotationException(null, null, 'A Entity Column must have a EntityRelation annotations');

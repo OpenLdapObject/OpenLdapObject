@@ -71,18 +71,6 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($uid, array('pdeparis', 'mdupont'));
     }
 
-    public function testRelationNull() {
-        $org = $this->em->getRepository('\OpenLdapObject\Tests\Manager\Organisation')->find('bad');
-        $this->assertEquals($org->getMember()[1], false);
-
-        $org->removeMember(false);
-
-        $this->em->persist($org);
-        $this->em->flush();
-
-        $this->em->getClient()->update($org->_getDn(), array('member' => array($org->getMember()[0]->_getDn(), 'uid=youdi,ou=people,dc=example,dc=com')));
-    }
-
 	public function testRelationSingle() {
 		$org = $this->em->getRepository('\OpenLdapObject\Tests\Manager\OrganisationSingle')->find('single-member');
 
@@ -139,6 +127,32 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase {
 
 		$this->em->remove($structure);
 		$this->em->flush();
+	}
+
+	/**
+	 * @expectedException OpenLdapObject\Exception\BadRelationException
+	 */
+	public function testBadRelation() {
+		$org = $this->em->getRepository('\OpenLdapObject\Tests\Manager\Organisation')->find('bad-relation');
+
+		$listUid = array();
+		foreach($org->getMember() as $member) {
+			$listUid[] = $member->getUid();
+		}
+
+	}
+
+	public function testBadRelationIgnore() {
+		$org = $this->em->getRepository('\OpenLdapObject\Tests\Manager\OrganisationBadRelation')->find('bad-relation');
+
+		$this->assertEquals(count($org->getMember()), 2);
+
+		$listUid = array();
+		foreach($org->getMember() as $member) {
+			$listUid[] = $member->getUid();
+		}
+
+		$this->assertEquals($listUid, array('pdeparis', 'mdupont'));
 	}
 }
  
