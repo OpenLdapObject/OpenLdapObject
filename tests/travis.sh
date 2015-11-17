@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo /opt/apacheds-2.0.0-M20/bin/apacheds start default
+sudo /opt/apacheds-2.0.0-M19/bin/apacheds start default
 
 STATUS=0
 while [ "$STATUS" != "1" ];
