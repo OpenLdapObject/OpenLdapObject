@@ -19,3 +19,7 @@ install:
 
 script:
   - ./tests/travis.sh
+
+addons:
+    code_climate:
+        repo_token: b33b09a1d0c857fc887313807c745510a8f5658e521ec38f31b8e1288d8cbd07

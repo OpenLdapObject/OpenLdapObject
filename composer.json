@@ -27,6 +27,9 @@
         "doctrine/annotations": "~1.0",
         "ulrichsg/getopt-php": "2.3.*"
     },
+    "require-dev": {
+      "codeclimate/php-test-reporter": "dev-master"
+    },
     "bin": [
         "lib/OpenLdapObject/generate-entity.php"
     ]
