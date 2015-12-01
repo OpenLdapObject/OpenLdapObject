@@ -168,7 +168,7 @@ class EntityBuilder {
         return $template;
     }
 
-	public function getMethodSrc($methodName, $file = null) {
+	protected function getMethodSrc($methodName, $file = null) {
 		if(is_null($file)) {
 			$file = file($this->analyzer->getReflection()->getFileName());
 		}

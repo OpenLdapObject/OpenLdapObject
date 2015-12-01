@@ -58,14 +58,5 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase {
         $entityBuilder = new EntityBuilder('OpenLdapObject\Tests\Manager\People');
         $entityBuilder->completeEntity();
     }
-
-	public function test() {
-		$entityBuilder = new EntityBuilder('OpenLdapObject\Tests\Manager\People');
-		$this->assertEquals('    public function getUid() {
-        return $this->uid;
-    }
-
-', $entityBuilder->getMethodSrc('getUid'));
-	}
 }
  
