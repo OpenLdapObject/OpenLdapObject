@@ -10,53 +10,23 @@ class EntityBuilderTest extends \PHPUnit_Framework_TestCase {
      * @var \OpenLdapObject\Builder\EntityBuilder
      */
     private $entityBuilder;
+    private $filePath;
+    private $fileContent;
 
     public function setUp() {
-        $this->entityBuilder = new EntityBuilder('OpenLdapObject\Tests\Manager\PeopleTest');
+        $this->entityBuilder = new EntityBuilder('OpenLdapObject\Tests\Manager\UncompletPeople');
+        $this->filePath = __DIR__ . '/../Manager/UncompletPeople.php';
+        $this->fileContent = file_get_contents($this->filePath);
     }
 
-    public function testGetter() {
-        $this->assertEquals($this->entityBuilder->createGetter('uid'),
-'    public function getUid() {
-        return $this->uid;
-    }
-
-');
-    }
-
-    public function testSetter() {
-        $this->assertEquals($this->entityBuilder->createSetter('mail'),
-'    public function setMail($value) {
-        $this->mail = $value;
-        return $this;
-    }
-
-');
-    }
-
-    public function testAdder() {
-        $this->assertEquals($this->entityBuilder->createAdder('telephoneNumber'),
-'    public function addTelephoneNumber($value) {
-        $this->telephoneNumber->add($value);
-        return $this;
-    }
-
-');
-    }
-
-    public function testRemover() {
-        $this->assertEquals($this->entityBuilder->createRemover('telephoneNumber'),
-'    public function removeTelephoneNumber($value) {
-        $this->telephoneNumber->removeElement($value);
-        return $this;
-    }
-
-');
+    public function tearDown() {
+        file_put_contents($this->filePath, $this->fileContent);
     }
 
     public function testBuilder() {
-        $entityBuilder = new EntityBuilder('OpenLdapObject\Tests\Manager\People');
-        $entityBuilder->completeEntity();
+        $this->assertEquals('74f91a238ed7123b7c78a308ba3dc81b', md5_file($this->filePath));
+        $this->entityBuilder->completeEntity();
+        $this->assertEquals('a8ebd1d8f7ecad19b9b8e3c2783f80db', md5_file($this->filePath));
     }
 }
  
