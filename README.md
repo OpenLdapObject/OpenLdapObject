@@ -4,5 +4,3 @@
 [![Code Climate](https://codeclimate.com/github/OpenLdapObject/OpenLdapObject/badges/gpa.svg)](https://codeclimate.com/github/OpenLdapObject/OpenLdapObject)
 
 Use Object to Read/Write in a LDAP
-
-**Information :** Prefer use the 1.1.0alpha version in place of the 1.0
