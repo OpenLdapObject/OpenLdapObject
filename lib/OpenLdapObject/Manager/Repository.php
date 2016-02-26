@@ -84,6 +84,19 @@ class Repository {
         return $this->query($query, $limit);
     }
 
+    public function findByOr(array $search, $limit = 0) {
+        $query = '(|(objectclass=*)';
+        foreach($search as $column => $value) {
+            if(!in_array($column, $this->columns)) {
+                throw new \InvalidArgumentException('No column name ' . $column . '. Column available : ['.implode(',', $this->columns).']');
+            }
+            $query .= '('.$column.'='.$value.')';
+        }
+        $query .= ')';
+
+        return $this->query($query, $limit);
+    }
+
     public function findOneBy(array $search) {
         $res = $this->findBy($search, 1);
         if(count($res) == 0) {
