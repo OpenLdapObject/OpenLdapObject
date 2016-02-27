@@ -1,36 +1,42 @@
 {
-    "name": "openldapobject/openldapobject",
-    "type": "library",
-    "keywords": ["openldap", "ldap", "object", "mapping"],
-    "description": "Use Object to Read/Write in a LDAP",
-    "homepage": "https://github.com/OpenLdapObject/OpenLdapObject",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Toshy62",
-            "email": "yoshi62@live.fr"
-        }
-    ],
-    "support": {
-        "issues": "https://github.com/OpenLdapObject/OpenLdapObject/issues",
-        "source": "https://github.com/OpenLdapObject/OpenLdapObject"
-    },
-    "autoload": {
-        "psr-0": {
-            "OpenLdapObject\\": "lib/",
-            "OpenLdapObject\\Tests": "tests/"
-        }
-    },
-    "require": {
-        "php": ">=5.4.0",
-        "ext-ldap": "*",
-        "doctrine/annotations": "~1.0",
-        "ulrichsg/getopt-php": "2.3.*"
-    },
-    "require-dev": {
-      "codeclimate/php-test-reporter": "dev-master"
-    },
-    "bin": [
-        "lib/OpenLdapObject/generate-entity.php"
-    ]
+  "name": "openldapobject/openldapobject",
+  "type": "library",
+  "keywords": [
+    "openldap",
+    "ldap",
+    "object",
+    "mapping"
+  ],
+  "description": "Use Object to Read/Write in a LDAP",
+  "homepage": "https://github.com/OpenLdapObject/OpenLdapObject",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Toshy62",
+      "email": "yoshi62@live.fr"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/OpenLdapObject/OpenLdapObject/issues",
+    "source": "https://github.com/OpenLdapObject/OpenLdapObject"
+  },
+  "autoload": {
+    "psr-0": {
+      "OpenLdapObject\\": "lib/",
+      "OpenLdapObject\\Tests": "tests/"
+    }
+  },
+  "require": {
+    "php": ">=5.4.0",
+    "ext-ldap": "*",
+    "doctrine/annotations": "~1.0",
+    "ulrichsg/getopt-php": "2.3.*"
+  },
+  "require-dev": {
+    "codeclimate/php-test-reporter": "dev-master",
+    "phpunit/phpunit": "~4"
+  },
+  "bin": [
+    "lib/OpenLdapObject/generate-entity.php"
+  ]
 }
