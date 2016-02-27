@@ -9,10 +9,10 @@ do
     STATUS=$(netstat -lapute | grep "10389" | wc -l);
 done
 
-ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f /root/data.ldif -w secret
-ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f /root/data.ldif -w secret
-ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f /root/data.ldif -w secret
-ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f /root/data.ldif -w secret
+ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f /root/data.ldif -w secret > /dev/null 2>&1
+ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f /root/data.ldif -w secret > /dev/null 2>&1
+ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f /root/data.ldif -w secret > /dev/null 2>&1
+ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f /root/data.ldif -w secret > /dev/null 2>&1
 
 cd /root/src;
 composer install;

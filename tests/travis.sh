@@ -9,9 +9,9 @@ do
     STATUS=$(sudo netstat -lapute | grep "10389" | wc -l);
 done
 
-sudo ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f tests/docker-test/data.ldif -w secret
-sudo ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f tests/docker-test/data.ldif -w secret
-sudo ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f tests/docker-test/data.ldif -w secret
+sudo ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f tests/docker-test/data.ldif -w secret > /dev/null 2>&1
+sudo ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f tests/docker-test/data.ldif -w secret > /dev/null 2>&1
+sudo ldapadd -c -H ldap://localhost:10389 -x -D "uid=admin,ou=system" -f tests/docker-test/data.ldif -w secret > /dev/null 2>&1
 
 composer install;
 mv tests/OpenLdapObject/Tests/TestConfiguration.php tests/OpenLdapObject/Tests/TestConfiguration.php.origin;
