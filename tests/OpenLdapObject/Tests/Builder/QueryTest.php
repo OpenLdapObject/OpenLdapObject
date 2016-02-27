@@ -89,6 +89,8 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         foreach ($result as $r) {
             $uids[] = $r->getUid();
         }
-        $this->assertEquals(['pdeparis', 'mdupont'], $uids);
+        $this->assertEquals(2, count($uids));
+        $this->assertContains('pdeparis', $uids);
+        $this->assertContains('mdupont', $uids);
     }
 }
