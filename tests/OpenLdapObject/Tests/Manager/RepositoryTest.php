@@ -40,6 +40,18 @@ class RepositoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($people->getTelephoneNumber()->toArray(), array('03 00 00 00 01', '04 00 00 00 01'));
     }
 
+    public function testFindByQuery()
+    {
+        $people = $this->em->getRepository('\OpenLdapObject\Tests\Manager\People')->findBy(['uid' => 'pdeparis', 'telephoneNumber' => '03 00 00 00 01']);
+        $people = $people[0];
+        $this->assertEquals($people->getUid(), 'pdeparis');
+        $this->assertEquals($people->getSn(), 'Deparis');
+        $this->assertEquals($people->getCn(), 'Pierre Deparis');
+        $this->assertEquals($people->getGivenName(), 'Pierre');
+        $this->assertEquals($people->getMail(), 'pierre.deparis@example.com');
+        $this->assertEquals($people->getTelephoneNumber()->toArray(), array('03 00 00 00 01', '04 00 00 00 01'));
+    }
+
     public function testFlush()
     {
         $newPeople = new People();

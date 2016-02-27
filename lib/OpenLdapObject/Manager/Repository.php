@@ -26,6 +26,7 @@
 
 namespace OpenLdapObject\Manager;
 
+use OpenLdapObject\Builder\Condition;
 use OpenLdapObject\Builder\Query;
 use OpenLdapObject\LdapClient\Client;
 use OpenLdapObject\Manager\Hydrate\Hydrater;
@@ -89,16 +90,13 @@ class Repository
 
     public function findBy(array $search, $limit = 0)
     {
-        $query = '(&(objectclass=*)';
-        foreach ($search as $column => $value) {
-            if (!in_array($column, $this->columns)) {
-                throw new \InvalidArgumentException('No column name ' . $column . '. Column available : [' . implode(',', $this->columns) . ']');
-            }
-            $query .= '(' . $column . '=' . $value . ')';
+        $query = new Query(Query::CAND);
+        $conditions = [];
+        foreach ($search as $key => $value) {
+            $conditions[] = new Condition($key, $value);
         }
-        $query .= ')';
-
-        return $this->query($query, $limit);
+        $query->cAnd($conditions);
+        return $this->findByQuery($query, $limit);
     }
 
     public function findOneBy(array $search)
