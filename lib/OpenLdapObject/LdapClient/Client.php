@@ -96,7 +96,7 @@ class Client {
     }
 
     public function __destruct() {
-        if(is_resource($this->connect)===true) {
+        if(is_resource($this->connect)) {
             ldap_close($this->connect);
         }
     }
