@@ -52,6 +52,10 @@ class EntityManager
         self::$availableManager[$name] = new EntityManager($client);
     }
 
+    /**
+     * @param string $name
+     * @return EntityManager
+     */
     public static function getEntityManager($name = 'default')
     {
         if (!is_string($name)) {

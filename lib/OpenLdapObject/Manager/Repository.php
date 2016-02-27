@@ -26,6 +26,7 @@
 
 namespace OpenLdapObject\Manager;
 
+use OpenLdapObject\Builder\Query;
 use OpenLdapObject\LdapClient\Client;
 use OpenLdapObject\Manager\Hydrate\Hydrater;
 
@@ -62,6 +63,9 @@ class Repository
         return $this->hydrater;
     }
 
+    /**
+     * @return EntityAnalyzer
+     */
     public function getAnalyzer()
     {
         return $this->analyzer;
@@ -75,6 +79,12 @@ class Repository
         }
 
         return $this->findOneBy(array($index => $value));
+    }
+
+    public function findByQuery(Query $query, $limit = 0)
+    {
+        $query = '(&(objectclass=*)' . $query->getQueryForRepository($this) . ')';
+        return $this->query($query, $limit);
     }
 
     public function findBy(array $search, $limit = 0)
