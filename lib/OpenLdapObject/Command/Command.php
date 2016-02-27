@@ -27,6 +27,7 @@
 namespace OpenLdapObject\Command;
 
 
-interface Command {
+interface Command
+{
     public function exec();
 } 

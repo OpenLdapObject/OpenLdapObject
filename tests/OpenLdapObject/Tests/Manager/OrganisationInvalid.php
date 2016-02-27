@@ -5,7 +5,8 @@ namespace OpenLdapObject\Tests\Manager;
 use OpenLdapObject\Entity;
 use OpenLdapObject\Annotations as OLO;
 
-class OrganisationInvalid extends Entity {
+class OrganisationInvalid extends Entity
+{
     /**
      * @OLO\Column(type="string")
      * @OLO\Index

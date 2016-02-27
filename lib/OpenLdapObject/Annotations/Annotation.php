@@ -27,6 +27,7 @@
 namespace OpenLdapObject\Annotations;
 
 
-interface Annotation {
+interface Annotation
+{
     public function check();
 } 

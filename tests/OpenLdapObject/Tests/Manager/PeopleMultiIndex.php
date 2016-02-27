@@ -9,7 +9,8 @@ use OpenLdapObject\Entity;
  * @OLO\Dn(ou="people")
  * @OLO\Entity({"inetOrgPerson", "organizationalPerson", "person", "top"})
  */
-class PeopleMultiIndex extends Entity {
+class PeopleMultiIndex extends Entity
+{
     /**
      * @OLO\Column(type="string")
      * @OLO\Index

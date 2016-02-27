@@ -28,12 +28,12 @@
 use Ulrichsg\Getopt\Getopt;
 use Ulrichsg\Getopt\Option;
 
-if(php_sapi_name() !== 'cli') {
+if (php_sapi_name() !== 'cli') {
     echo 'This Script must be run in a CLI.';
     exit();
 }
 
-if(strpos(__DIR__, 'vendor') === false) {
+if (strpos(__DIR__, 'vendor') === false) {
     // We are in a local development
     $vendorDirectory = __DIR__ . '/../../vendor/';
 } else {
@@ -53,14 +53,14 @@ $getOpt = new Getopt(array(
 ));
 $getOpt->parse();
 
-if($getOpt->getOption('help')) {
+if ($getOpt->getOption('help')) {
     echo $getOpt->getHelpText();
-} else if($getOpt->getOption('version')) {
-    echo 'Version '.\OpenLdapObject\OpenLdapObject::VERSION.' ('.\OpenLdapObject\OpenLdapObject::DATE.')' . PHP_EOL;
-} else if($getOpt->getOption('entity')) {
-    if($getOpt->getOption('regenerate')) {
+} else if ($getOpt->getOption('version')) {
+    echo 'Version ' . \OpenLdapObject\OpenLdapObject::VERSION . ' (' . \OpenLdapObject\OpenLdapObject::DATE . ')' . PHP_EOL;
+} else if ($getOpt->getOption('entity')) {
+    if ($getOpt->getOption('regenerate')) {
         $command = new \OpenLdapObject\Command\ReGenerateCommand($getOpt->getOptions());
-    } elseif($getOpt->getOption('clean')) {
+    } elseif ($getOpt->getOption('clean')) {
         $command = new \OpenLdapObject\Command\CleanCommand($getOpt->getOptions());
     } else {
         $command = new \OpenLdapObject\Command\GenerateCommand($getOpt->getOptions());
@@ -68,6 +68,6 @@ if($getOpt->getOption('help')) {
 
     $command->exec();
 } else {
-	echo $getOpt->getHelpText();
+    echo $getOpt->getHelpText();
 }
 ?>

@@ -27,8 +27,10 @@
 namespace OpenLdapObject\Exception;
 
 
-class LdapException extends \Exception {
-	public function __construct($message) {
-		parent::__construct($message);
-	}
+class LdapException extends \Exception
+{
+    public function __construct($message)
+    {
+        parent::__construct($message);
+    }
 }

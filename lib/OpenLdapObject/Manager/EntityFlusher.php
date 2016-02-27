@@ -31,7 +31,8 @@ use OpenLdapObject\Entity;
 use OpenLdapObject\Exception\InflushableException;
 use OpenLdapObject\Manager\Hydrate\Hydrater;
 
-class EntityFlusher {
+class EntityFlusher
+{
     const CREATE = 0, RENAME = 1, DELETE = 2;
     /**
      * @var EntityManager
@@ -39,14 +40,16 @@ class EntityFlusher {
     private $em;
     private $param = array();
 
-    public function __construct(EntityManager $em) {
+    public function __construct(EntityManager $em)
+    {
         $this->em = $em;
     }
 
-    public function setParam(array $param) {
+    public function setParam(array $param)
+    {
         $keys = array(EntityFlusher::CREATE, EntityFlusher::RENAME, EntityFlusher::DELETE);
-        foreach($keys as $key) {
-            if(!array_key_exists($key, $param)) {
+        foreach ($keys as $key) {
+            if (!array_key_exists($key, $param)) {
                 $this->param[$key] = true;
             } else {
                 $this->param[$key] = $param[$key];
@@ -59,14 +62,15 @@ class EntityFlusher {
      * @param Hydrater $hydrater
      * @param EntityAnalyzer $analyzer
      */
-    public function flushEntity($entity, Hydrater $hydrater, EntityAnalyzer $analyzer) {
+    public function flushEntity($entity, Hydrater $hydrater, EntityAnalyzer $analyzer)
+    {
         $originData = $entity->_getOriginData();
         $originName = array();
 
-        if(is_null($originData)) {
+        if (is_null($originData)) {
             $originData = array();
-            foreach($analyzer->listColumns() as $name => $data) {
-                if($data['type'] === 'array') {
+            foreach ($analyzer->listColumns() as $name => $data) {
+                if ($data['type'] === 'array') {
                     $originData[strtolower($name)] = array();
                 } else {
                     $originData[strtolower($name)] = NULL;
@@ -74,24 +78,24 @@ class EntityFlusher {
             }
         }
 
-        foreach($analyzer->listColumns() as $name => $data) {
+        foreach ($analyzer->listColumns() as $name => $data) {
             $originName[strtolower($name)] = $name;
         }
-		$originName['objectclass'] = 'objectclass';
+        $originName['objectclass'] = 'objectclass';
 
         $currentData = $hydrater->getData($entity);
 
-        foreach($currentData as $column => $value) {
-            if(array_key_exists($originName[strtolower($column)], $analyzer->listColumns()) && $analyzer->listColumns()[$originName[strtolower($column)]]['type'] === 'array' && is_null($value)) {
+        foreach ($currentData as $column => $value) {
+            if (array_key_exists($originName[strtolower($column)], $analyzer->listColumns()) && $analyzer->listColumns()[$originName[strtolower($column)]]['type'] === 'array' && is_null($value)) {
                 $currentData[$column] = array();
             }
             // Convert array of entity to array of DN
-            if($analyzer->isEntityRelation($originName[strtolower($column)])){
+            if ($analyzer->isEntityRelation($originName[strtolower($column)])) {
                 $listDn = array();
-                foreach($value as $e) {
-					if($e instanceof Entity) {
-						$listDn[] = $e->_getDn();
-					}
+                foreach ($value as $e) {
+                    if ($e instanceof Entity) {
+                        $listDn[] = $e->_getDn();
+                    }
                 }
                 $currentData[$column] = $listDn;
             }
@@ -100,43 +104,45 @@ class EntityFlusher {
         $diff = self::dataDiff($currentData, $originData);
 
         $dn = $entity->_getDn();
-        if(is_null($dn)) {
-            if($this->param[EntityFlusher::CREATE]) {
+        if (is_null($dn)) {
+            if ($this->param[EntityFlusher::CREATE]) {
                 $this->create($entity, $currentData, $diff, $analyzer);
             } else {
                 throw new InflushableException('Unable to create entity, Param::Create is false');
             }
         } else {
-            if(array_key_exists($analyzer->getIndex(), $diff)) {
+            if (array_key_exists($analyzer->getIndex(), $diff)) {
                 // If key index is diff => rename
-                if($this->param[EntityFlusher::RENAME]) {
+                if ($this->param[EntityFlusher::RENAME]) {
                     $this->rename($entity, $currentData, $diff, $analyzer);
                 } else {
                     throw new InflushableException('Unable to rename entity, Param::Rename is false');
                 }
             }
-            if(count($diff) > 0) {
+            if (count($diff) > 0) {
                 $this->em->getClient()->update($entity->_getDn(), $diff);
             }
         }
     }
 
-    public function removeEntity($entity, Hydrater $hydrater, EntityAnalyzer $analyzer) {
-        if($this->param[EntityFlusher::DELETE]) {
+    public function removeEntity($entity, Hydrater $hydrater, EntityAnalyzer $analyzer)
+    {
+        if ($this->param[EntityFlusher::DELETE]) {
             $this->em->getClient()->delete($entity->_getDn());
         } else {
             throw new InflushableException('Unable to delete entity, Param:Delete is false');
         }
     }
 
-    private static function dataDiff($data, $origin) {
+    private static function dataDiff($data, $origin)
+    {
         $diff = array();
-        foreach($data as $key => $value) {
+        foreach ($data as $key => $value) {
             $lkey = strtolower($key);
-            if(!array_key_exists($lkey, $origin)) {
+            if (!array_key_exists($lkey, $origin)) {
                 $diff[$key] = $value;
             } else {
-                if($data[$key] !== $origin[$lkey]) {
+                if ($data[$key] !== $origin[$lkey]) {
                     $diff[$lkey] = $value;
                 }
             }
@@ -145,31 +151,34 @@ class EntityFlusher {
         return $diff;
     }
 
-    private function create($entity, $currentData, $diff, EntityAnalyzer $analyzer) {
+    private function create($entity, $currentData, $diff, EntityAnalyzer $analyzer)
+    {
         $dn = $this->getNewDn($entity, $currentData, $analyzer);
         $entity->_setDn($dn);
 
         $this->em->getClient()->create($dn, $diff);
     }
 
-    private function rename($entity, $currentData, $diff, EntityAnalyzer $analyzer) {
+    private function rename($entity, $currentData, $diff, EntityAnalyzer $analyzer)
+    {
         $newDn = explode(',', $this->getNewDn($entity, $currentData, $analyzer));
         $oldDn = $entity->_getDn();
         $entity->_setDn(implode(',', $newDn));
         $this->em->getClient()->rename($oldDn, $newDn[0]);
     }
 
-    private function getNewDn($entity, $currentData, EntityAnalyzer $analyzer) {
+    private function getNewDn($entity, $currentData, EntityAnalyzer $analyzer)
+    {
         $index = $analyzer->getIndex();
-        if($index === false) {
+        if ($index === false) {
             throw new InflushableException('Entity ' . get_class($entity) . 'have no index');
         }
         $dnPiece = array();
         $dnPiece[] = $index . '=' . $currentData[$index];
-        if(is_string($analyzer->getBaseDn())) {
+        if (is_string($analyzer->getBaseDn())) {
             $dnPiece[] = $analyzer->getBaseDn();
         }
-        if(is_string($this->em->getClient()->getBaseDn())) {
+        if (is_string($this->em->getClient()->getBaseDn())) {
             $dnPiece[] = $this->em->getClient()->getBaseDn();
         }
         return implode(',', $dnPiece);

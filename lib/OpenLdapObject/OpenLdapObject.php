@@ -33,41 +33,45 @@ namespace OpenLdapObject;
  *
  * @package OpenLdapObject
  */
-abstract class OpenLdapObject {
-	/**
-	 * ID Version
-	 */
-	const VERSION = '1.1.0dev';
-	/**
-	 * Release Date
-	 */
-	const DATE = '31/03/2015';
+abstract class OpenLdapObject
+{
+    /**
+     * ID Version
+     */
+    const VERSION = '1.1.0dev';
+    /**
+     * Release Date
+     */
+    const DATE = '31/03/2015';
 
-	/**
-	 * True if the global strict mode is enable
-	 * @var bool enable/disable
-	 */
-	private static $strict = true;
+    /**
+     * True if the global strict mode is enable
+     * @var bool enable/disable
+     */
+    private static $strict = true;
 
-	/**
-	 * Check if the global strict mode is enable
-	 * @return bool
-	 */
-	public static function isStrict() {
-		return self::$strict;
-	}
+    /**
+     * Check if the global strict mode is enable
+     * @return bool
+     */
+    public static function isStrict()
+    {
+        return self::$strict;
+    }
 
-	/**
-	 * Enable the global strict mode
-	 */
-	public static function enableStrictMode() {
-		self::$strict = true;
-	}
+    /**
+     * Enable the global strict mode
+     */
+    public static function enableStrictMode()
+    {
+        self::$strict = true;
+    }
 
-	/**
-	 * Disable the global strict mode
-	 */
-	public static function disableStrictMode() {
-		self::$strict = false;
-	}
+    /**
+     * Disable the global strict mode
+     */
+    public static function disableStrictMode()
+    {
+        self::$strict = false;
+    }
 }

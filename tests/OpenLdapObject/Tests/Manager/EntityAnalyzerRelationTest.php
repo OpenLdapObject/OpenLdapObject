@@ -4,20 +4,23 @@ namespace OpenLdapObject\Tests\Manager;
 use OpenLdapObject\Annotations\InvalidAnnotationException;
 use OpenLdapObject\Manager\EntityAnalyzer;
 
-class EntityAnalyzerRelationTest extends \PHPUnit_Framework_TestCase {
+class EntityAnalyzerRelationTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @var \OpenLdapObject\Manager\EntityAnalyzer
      */
     private $entityAnalyzer;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->entityAnalyzer = EntityAnalyzer::get('OpenLdapObject\Tests\Manager\OrganisationTest');
     }
 
-    public function testListField() {
+    public function testListField()
+    {
         $this->assertEquals($this->entityAnalyzer->listColumns(), array(
-            'cn' => array('type' => 'string', 'index' => true, 'strict' => true),
-            'member' => array('type' => 'entity', 'index' => false, 'strict' => true, 'relation' => array('classname' => 'OpenLdapObject\Tests\Manager\People', 'multi' => true, 'ignore_errors' => false))
+                'cn' => array('type' => 'string', 'index' => true, 'strict' => true),
+                'member' => array('type' => 'entity', 'index' => false, 'strict' => true, 'relation' => array('classname' => 'OpenLdapObject\Tests\Manager\People', 'multi' => true, 'ignore_errors' => false))
             )
         );
     }
@@ -25,12 +28,14 @@ class EntityAnalyzerRelationTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException OpenLdapObject\Annotations\InvalidAnnotationException
      */
-    public function testListFieldMultiIndex() {
+    public function testListFieldMultiIndex()
+    {
         $entityAnalyzer = EntityAnalyzer::get('OpenLdapObject\Tests\Manager\OrganisationInvalid');
         $entityAnalyzer->listColumns();
     }
 
-    public function testGetClassAnnotation() {
+    public function testGetClassAnnotation()
+    {
         $this->assertEquals($this->entityAnalyzer->getClassAnnotation(), array(
                 'dn' => 'ou=organisation',
                 'objectclass' => array('groupOfNames', 'top')
@@ -38,11 +43,13 @@ class EntityAnalyzerRelationTest extends \PHPUnit_Framework_TestCase {
         );
     }
 
-    public function testGetBaseDn() {
+    public function testGetBaseDn()
+    {
         $this->assertEquals($this->entityAnalyzer->getBaseDn(), 'ou=organisation');
     }
 
-    public function testListRequiredMethod() {
+    public function testListRequiredMethod()
+    {
         $this->assertEquals($this->entityAnalyzer->listRequiredMethod(), array(
             'getCn' => array('type' => EntityAnalyzer::GETTER, 'column' => 'cn'),
             'setCn' => array('type' => EntityAnalyzer::SETTER, 'column' => 'cn'),
@@ -52,7 +59,8 @@ class EntityAnalyzerRelationTest extends \PHPUnit_Framework_TestCase {
         ));
     }
 
-    public function testListMissingMethod() {
+    public function testListMissingMethod()
+    {
         $this->assertEquals($this->entityAnalyzer->listMissingMethod(), array(
             'getCn' => array('type' => EntityAnalyzer::GETTER, 'column' => 'cn'),
             'setCn' => array('type' => EntityAnalyzer::SETTER, 'column' => 'cn'),
@@ -62,12 +70,14 @@ class EntityAnalyzerRelationTest extends \PHPUnit_Framework_TestCase {
         ));
     }
 
-    public function testIsEntityRelation() {
+    public function testIsEntityRelation()
+    {
         $this->assertEquals($this->entityAnalyzer->isEntityRelation('member'), true);
         $this->assertEquals($this->entityAnalyzer->isEntityRelation('cn'), false);
     }
 
-    public function testIsMultiEntityRelation() {
+    public function testIsMultiEntityRelation()
+    {
         $this->assertEquals($this->entityAnalyzer->isEntityRelationMultiple('member'), true);
         $this->assertEquals($this->entityAnalyzer->isEntityRelationMultiple('cn'), false);
     }

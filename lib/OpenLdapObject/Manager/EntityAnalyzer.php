@@ -41,7 +41,8 @@ use OpenLdapObject\Utils;
  * @package OpenLdapObject\Manager
  * @author Toshy62 <yoshi62@live.fr>
  */
-class EntityAnalyzer {
+class EntityAnalyzer
+{
     const GETTER = 0, SETTER = 1, ADDER = 2, REMOVER = 3;
 
     private $className;
@@ -64,14 +65,16 @@ class EntityAnalyzer {
 
     private static $instances = array();
 
-    public static function get($className) {
-        if(!array_key_exists($className, self::$instances)) {
+    public static function get($className)
+    {
+        if (!array_key_exists($className, self::$instances)) {
             self::$instances[$className] = new EntityAnalyzer($className);
         }
         return self::$instances[$className];
     }
 
-    private function __construct($className) {
+    private function __construct($className)
+    {
         $this->className = $className;
 
         $this->reflection = new \ReflectionClass($className);
@@ -83,8 +86,9 @@ class EntityAnalyzer {
      * @return array
      * @throws \OpenLdapObject\Annotations\InvalidAnnotationException
      */
-    public function listColumns() {
-        if(!is_null($this->listColumns)) {
+    public function listColumns()
+    {
+        if (!is_null($this->listColumns)) {
             return $this->listColumns;
         }
 
@@ -96,21 +100,21 @@ class EntityAnalyzer {
         $haveIndex = false;
         $columns = array();
 
-        foreach($properties as $property) {
+        foreach ($properties as $property) {
             // For each properties, get the list of annotations
             $propertyAnnotation = $this->annotationReader->getPropertyAnnotations($property);
             // Check the property has a Column Annotation
-            if(($columnAnnotation = self::haveAnnotation(self::$ColumnAnnotation, $propertyAnnotation)) !== false) {
+            if (($columnAnnotation = self::haveAnnotation(self::$ColumnAnnotation, $propertyAnnotation)) !== false) {
                 $columnAnnotation->check();
                 $column = array(
                     'type' => $columnAnnotation->type,
-					'strict' => $columnAnnotation->strict
+                    'strict' => $columnAnnotation->strict
                 );
                 // Check the property has an Index Annotation
-                if(($indexAnnotation = self::haveAnnotation(self::$IndexAnnotation, $propertyAnnotation)) !== false) {
+                if (($indexAnnotation = self::haveAnnotation(self::$IndexAnnotation, $propertyAnnotation)) !== false) {
                     $indexAnnotation->check();
                     // Verify that the class have a unique index annotation
-                    if($haveIndex == true) {
+                    if ($haveIndex == true) {
                         throw new InvalidAnnotationException($indexAnnotation, $property->getName(), 'Class ' . $this->className . ' have already an index when he read the annotation of ' . $property->getName());
                     }
                     $column['index'] = true;
@@ -120,19 +124,19 @@ class EntityAnalyzer {
                 }
 
                 // If is an entity Column, check entityRelationAnnotation
-                if($column['type'] == 'entity') {
-                    if(($relationAnnotation = self::haveAnnotation(self::$entityRelationAnnotation, $propertyAnnotation)) !== false) {
+                if ($column['type'] == 'entity') {
+                    if (($relationAnnotation = self::haveAnnotation(self::$entityRelationAnnotation, $propertyAnnotation)) !== false) {
                         $relationAnnotation->check();
                         try {
                             $annotationClassOfRelation = EntityAnalyzer::get($relationAnnotation->classname)->getClassAnnotation();
-                        } catch(InvalidEntityException $e) {
+                        } catch (InvalidEntityException $e) {
                             throw new InvalidAnnotationException($relationAnnotation, 'classname', 'The class ' . $relationAnnotation->classname . ' is not an Entity');
                         }
 
                         $column['relation'] = array(
                             'classname' => $relationAnnotation->classname,
                             'multi' => $relationAnnotation->multi,
-							'ignore_errors' => $relationAnnotation->ignore_errors
+                            'ignore_errors' => $relationAnnotation->ignore_errors
                         );
                     } else {
                         throw new InvalidAnnotationException(null, null, 'A Entity Column must have a EntityRelation annotations');
@@ -147,27 +151,29 @@ class EntityAnalyzer {
         return $columns;
     }
 
-    public function getIndex() {
-        if(!is_null($this->index)) return $this->index;
+    public function getIndex()
+    {
+        if (!is_null($this->index)) return $this->index;
         $column = $this->listColumns();
 
-        foreach($column as $name => $data) {
-            if($data['index'] == true) {
+        foreach ($column as $name => $data) {
+            if ($data['index'] == true) {
                 $this->index = $name;
             }
         }
-        if(is_null($this->index)) {
+        if (is_null($this->index)) {
             $this->index = false;
         }
 
         return $this->index;
     }
 
-    public function getClassAnnotation() {
-        if(!is_null($this->classAnnotation)) return $this->classAnnotation;
+    public function getClassAnnotation()
+    {
+        if (!is_null($this->classAnnotation)) return $this->classAnnotation;
 
         $annotation = $this->annotationReader->getClassAnnotation($this->reflection, self::$dnAnnotation);
-        if(is_null($annotation)) {
+        if (is_null($annotation)) {
             throw new InvalidEntityException($this->className . ' have no ' . self::$dnAnnotation . ' annotation');
         }
         $annotation->check();
@@ -175,7 +181,7 @@ class EntityAnalyzer {
         $this->classAnnotation = array('dn' => $annotation->value);
 
         $annotation = $this->annotationReader->getClassAnnotation($this->reflection, self::$entityAnnotation);
-        if(is_null($annotation)) {
+        if (is_null($annotation)) {
             throw new InvalidEntityException($this->className . ' have no ' . self::$entityAnnotation . ' annotation');
         }
         $annotation->check();
@@ -184,11 +190,13 @@ class EntityAnalyzer {
         return $this->classAnnotation;
     }
 
-    public function getBaseDn() {
+    public function getBaseDn()
+    {
         return $this->getClassAnnotation()['dn'];
     }
 
-    public function getObjectclass() {
+    public function getObjectclass()
+    {
         return $this->getClassAnnotation()['objectclass'];
     }
 
@@ -196,27 +204,28 @@ class EntityAnalyzer {
      * Get the list of require method
      * @return array
      */
-    public function listRequiredMethod() {
-        if(!is_null($this->listRequiredMethod)) return $this->listRequiredMethod;
+    public function listRequiredMethod()
+    {
+        if (!is_null($this->listRequiredMethod)) return $this->listRequiredMethod;
 
         $columns = $this->listColumns();
         $methodList = array();
 
-        foreach($columns as $name => $schema) {
-			$this->methodGetter($methodList, $name);
-            switch($schema['type']) {
+        foreach ($columns as $name => $schema) {
+            $this->methodGetter($methodList, $name);
+            switch ($schema['type']) {
                 case 'array':
                     $this->methodAdderRemover($methodList, $name);
                     break;
                 case 'string':
-					$this->methodSetter($methodList, $name);
+                    $this->methodSetter($methodList, $name);
                     break;
                 case 'entity':
-					if($schema['relation']['multi']) {
-						$this->methodAdderRemover($methodList, $name);
-					} else {
-						$this->methodSetter($methodList, $name);
-					}
+                    if ($schema['relation']['multi']) {
+                        $this->methodAdderRemover($methodList, $name);
+                    } else {
+                        $this->methodSetter($methodList, $name);
+                    }
                     break;
             }
         }
@@ -229,14 +238,15 @@ class EntityAnalyzer {
     /**
      * Get the list of missing require method
      */
-    public function listMissingMethod() {
-        if(!is_null($this->listMissingMethod)) return $this->listMissingMethod;
+    public function listMissingMethod()
+    {
+        if (!is_null($this->listMissingMethod)) return $this->listMissingMethod;
 
         $required = $this->listRequiredMethod();
         $missing = array();
 
-        foreach($required as $methodName => $data) {
-            if(!$this->reflection->hasMethod($methodName)) {
+        foreach ($required as $methodName => $data) {
+            if (!$this->reflection->hasMethod($methodName)) {
                 $missing[$methodName] = $data;
             }
         }
@@ -252,9 +262,10 @@ class EntityAnalyzer {
      * @param array $annotationList
      * @return bool|Annotation
      */
-    private static function haveAnnotation($annotationClass, array $annotationList) {
-        foreach($annotationList as $annotation) {
-            if(is_a($annotation, $annotationClass)) {
+    private static function haveAnnotation($annotationClass, array $annotationList)
+    {
+        foreach ($annotationList as $annotation) {
+            if (is_a($annotation, $annotationClass)) {
                 return $annotation;
             }
         }
@@ -264,34 +275,40 @@ class EntityAnalyzer {
     /**
      * @return \ReflectionClass
      */
-    public function getReflection() {
+    public function getReflection()
+    {
         return $this->reflection;
     }
 
-    public function isEntityRelation($column) {
-        if(!array_key_exists($column, $this->listColumns())) {
+    public function isEntityRelation($column)
+    {
+        if (!array_key_exists($column, $this->listColumns())) {
             return false;
         }
         return $this->listColumns()[$column]['type'] === 'entity';
     }
 
-    public function isEntityRelationMultiple($column) {
-        if($this->isEntityRelation($column)) {
+    public function isEntityRelationMultiple($column)
+    {
+        if ($this->isEntityRelation($column)) {
             return $this->listColumns()[$column]['relation']['multi'];
         }
         return false;
     }
 
-	protected function methodGetter(array &$methodList, $name) {
-		$methodList['get' . Utils::capitalize($name)] = array('type' => self::GETTER, 'column' => $name);
-	}
+    protected function methodGetter(array &$methodList, $name)
+    {
+        $methodList['get' . Utils::capitalize($name)] = array('type' => self::GETTER, 'column' => $name);
+    }
 
-	protected function methodAdderRemover(array &$methodList, $name) {
-		$methodList['add' . Utils::Capitalize($name)] = array('type' => self::ADDER, 'column' => $name);
-		$methodList['remove' . Utils::Capitalize($name)] = array('type' => self::REMOVER, 'column' => $name);
-	}
+    protected function methodAdderRemover(array &$methodList, $name)
+    {
+        $methodList['add' . Utils::Capitalize($name)] = array('type' => self::ADDER, 'column' => $name);
+        $methodList['remove' . Utils::Capitalize($name)] = array('type' => self::REMOVER, 'column' => $name);
+    }
 
-	protected function methodSetter(array &$methodList, $name) {
-		$methodList['set' . Utils::Capitalize($name)] = array('type' => self::SETTER, 'column' => $name);
-	}
+    protected function methodSetter(array &$methodList, $name)
+    {
+        $methodList['set' . Utils::Capitalize($name)] = array('type' => self::SETTER, 'column' => $name);
+    }
 }

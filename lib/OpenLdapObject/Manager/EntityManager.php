@@ -29,7 +29,8 @@ namespace OpenLdapObject\Manager;
 
 use OpenLdapObject\LdapClient\Client;
 
-class EntityManager {
+class EntityManager
+{
     private static $availableManager = array();
     private $client;
     private $flusher;
@@ -38,31 +39,34 @@ class EntityManager {
     private $toPersistEntity = array();
     private $toRemoveEntity = array();
 
-    public static function addEntityManager($name, Client $client, $ignore = false) {
-        if(!is_string($name)) {
+    public static function addEntityManager($name, Client $client, $ignore = false)
+    {
+        if (!is_string($name)) {
             throw new \InvalidArgumentException('$name must be a string');
         }
 
-        if(array_key_exists($name, self::$availableManager) && !$ignore) {
-            throw new \InvalidArgumentException('A "'.$name.'" manager already defined');
+        if (array_key_exists($name, self::$availableManager) && !$ignore) {
+            throw new \InvalidArgumentException('A "' . $name . '" manager already defined');
         }
 
         self::$availableManager[$name] = new EntityManager($client);
     }
 
-    public static function getEntityManager($name = 'default') {
-        if(!is_string($name)) {
+    public static function getEntityManager($name = 'default')
+    {
+        if (!is_string($name)) {
             throw new \InvalidArgumentException('$name must be a string');
         }
 
-        if(!array_key_exists($name, self::$availableManager)) {
-            throw new \InvalidArgumentException('The "'.$name.'" manager is not defined');
+        if (!array_key_exists($name, self::$availableManager)) {
+            throw new \InvalidArgumentException('The "' . $name . '" manager is not defined');
         }
 
         return self::$availableManager[$name];
     }
 
-    private function __construct(Client $client) {
+    private function __construct(Client $client)
+    {
         $this->client = $client;
         $this->flusher = new EntityFlusher($this);
     }
@@ -71,45 +75,50 @@ class EntityManager {
      * @param $entityClass
      * @return Repository
      */
-    public function getRepository($entityClass) {
-        if(!array_key_exists($entityClass, $this->repository)) {
+    public function getRepository($entityClass)
+    {
+        if (!array_key_exists($entityClass, $this->repository)) {
             $this->repository[$entityClass] = new Repository($this, $entityClass);
         }
 
         return $this->repository[$entityClass];
     }
 
-    public function getClient() {
+    public function getClient()
+    {
         return $this->client;
     }
 
-    public function persist($entity) {
-        if(!is_subclass_of($entity, 'OpenLdapObject\Entity')) {
+    public function persist($entity)
+    {
+        if (!is_subclass_of($entity, 'OpenLdapObject\Entity')) {
             throw new \InvalidArgumentException('The entity is not a valid entity');
         }
 
-        if(!in_array($entity, $this->toPersistEntity)) {
+        if (!in_array($entity, $this->toPersistEntity)) {
             $this->toPersistEntity[] = $entity;
         }
     }
 
-    public function remove($entity) {
-        if(!is_subclass_of($entity, 'OpenLdapObject\Entity')) {
+    public function remove($entity)
+    {
+        if (!is_subclass_of($entity, 'OpenLdapObject\Entity')) {
             throw new \InvalidArgumentException('The entity is not a valid entity');
         }
 
-        if(!in_array($entity, $this->toRemoveEntity)) {
+        if (!in_array($entity, $this->toRemoveEntity)) {
             $this->toRemoveEntity[] = $entity;
         }
     }
 
-    public function flush(array $param = array()) {
+    public function flush(array $param = array())
+    {
         $this->flusher->setParam($param);
-        foreach($this->toPersistEntity as $entity) {
+        foreach ($this->toPersistEntity as $entity) {
             $repository = $this->getRepository(get_class($entity));
             $this->flusher->flushEntity($entity, $repository->getHydrater(), $repository->getAnalyzer());
         }
-        foreach($this->toRemoveEntity as $entity) {
+        foreach ($this->toRemoveEntity as $entity) {
             $repository = $this->getRepository(get_class($entity));
             $this->flusher->removeEntity($entity, $repository->getHydrater(), $repository->getAnalyzer());
         }
@@ -117,8 +126,9 @@ class EntityManager {
         $this->toPersistEntity = array();
         $this->toRemoveEntity = array();
     }
-    
-    public function setClient(Client $client) {
+
+    public function setClient(Client $client)
+    {
         $this->client = $client;
     }
 }

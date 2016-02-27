@@ -5,8 +5,10 @@ namespace OpenLdapObject\Tests\LdapClient;
 
 use OpenLdapObject\LdapClient\Connection;
 
-class ConnectionTest extends \PHPUnit_Framework_TestCase {
-    public function testGoodConnection() {
+class ConnectionTest extends \PHPUnit_Framework_TestCase
+{
+    public function testGoodConnection()
+    {
         $connection = new Connection(LDAP_HOST, LDAP_PORT);
         $connection->identify(LDAP_USER, LDAP_PASSWORD);
         $connection->connect();
@@ -15,7 +17,8 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException OpenLdapObject\Exception\BadIdentificationException
      */
-    public function testBadConnection() {
+    public function testBadConnection()
+    {
         $connection = new Connection(LDAP_BAD_HOST, LDAP_BAD_PORT);
         $connection->identify(LDAP_USER, LDAP_PASSWORD);
         $connection->connect();
@@ -25,7 +28,8 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException OpenLdapObject\Exception\BadIdentificationException
      */
-    public function testBadIdentify() {
+    public function testBadIdentify()
+    {
         $connection = new Connection(LDAP_HOST, LDAP_PORT);
         $connection->identify(LDAP_BAD_USER, LDAP_BAD_PASSWORD);
         $connection->connect();

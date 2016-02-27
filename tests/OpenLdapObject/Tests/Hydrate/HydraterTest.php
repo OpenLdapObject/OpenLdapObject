@@ -5,17 +5,20 @@ namespace OpenLdapObject\Tests\Hydrate;
 
 use OpenLdapObject\Manager\Hydrate\Hydrater;
 
-class HydraterTest extends \PHPUnit_Framework_TestCase {
+class HydraterTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @var Hydrater
      */
     private $hydrater;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->hydrater = new Hydrater('OpenLdapObject\Tests\Manager\People');
     }
 
-    public function testHydrate() {
+    public function testHydrate()
+    {
         $array = array(
             'uid' => 'pdeparis',
             'telephoneNumber' => array('03 00 00 00 00', '04 00 00 00 00'),
@@ -27,7 +30,8 @@ class HydraterTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($people->getGivenName(), 'Pierre');
     }
 
-    public function testGetData() {
+    public function testGetData()
+    {
         $array = array(
             'uid' => 'pdeparis',
             'telephoneNumber' => array('03 00 00 00 00', '04 00 00 00 00')
@@ -41,7 +45,7 @@ class HydraterTest extends \PHPUnit_Framework_TestCase {
             'sn' => array(),
             'givenName' => array(),
             'mail' => array(),
-			'objectclass' => array('inetOrgPerson', 'organizationalPerson', 'person', 'top')
+            'objectclass' => array('inetOrgPerson', 'organizationalPerson', 'person', 'top')
         ));
     }
 }

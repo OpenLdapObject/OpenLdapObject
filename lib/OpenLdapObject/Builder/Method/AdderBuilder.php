@@ -26,10 +26,12 @@
 namespace OpenLdapObject\Builder\Method;
 
 
-class AdderBuilder extends MethodBuilder {
-    protected static $template = '<space><visibility> function add<column|capitalize>($value) {<eol><space><space>$this-><column>->add($value);<eol><space><space>return $this;<eol><space>}<eol><eol>';
+class AdderBuilder extends MethodBuilder
+{
+    protected static $template = '<space><visibility> function add<column|capitalize>($value)<eol><space>{<eol><space><space>$this-><column>->add($value);<eol><space><space>return $this;<eol><space>}<eol><eol>';
 
-    public function getMethodName() {
+    public function getMethodName()
+    {
         return 'add' . Utils::capitalize($this->getProperty());
     }
 }

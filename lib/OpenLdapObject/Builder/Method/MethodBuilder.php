@@ -28,17 +28,20 @@ namespace OpenLdapObject\Builder\Method;
 
 use OpenLdapObject\Utils;
 
-abstract class MethodBuilder {
+abstract class MethodBuilder
+{
     private static $space = '    ';
     private static $eol = PHP_EOL;
     private static $visibility = 'public';
     private $property;
 
-    public function __construct($property) {
+    public function __construct($property)
+    {
         $this->property = $property;
     }
 
-    public function getMethodSrc() {
+    public function getMethodSrc()
+    {
         $template = static::$template;
         $template = str_replace('<visibility>', self::$visibility, $template);
         $template = str_replace('<space>', self::$space, $template);
@@ -48,7 +51,8 @@ abstract class MethodBuilder {
         return $template;
     }
 
-    public function getProperty() {
+    public function getProperty()
+    {
         return $this->property;
     }
 

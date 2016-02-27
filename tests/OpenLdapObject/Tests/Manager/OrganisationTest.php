@@ -9,7 +9,8 @@ use OpenLdapObject\Annotations as OLO;
  * @OLO\Dn(value="ou=organisation")
  * @OLO\Entity({"groupOfNames", "top"})
  */
-class OrganisationTest extends Entity {
+class OrganisationTest extends Entity
+{
     /**
      * @OLO\Column(type="string")
      * @OLO\Index

@@ -29,7 +29,8 @@ namespace OpenLdapObject\Manager;
 use OpenLdapObject\LdapClient\Client;
 use OpenLdapObject\Manager\Hydrate\Hydrater;
 
-class Repository {
+class Repository
+{
     private $em;
     private $className;
     private $analyzer;
@@ -38,7 +39,8 @@ class Repository {
     private $baseDn;
     private $hydrater;
 
-    public function __construct(EntityManager $em, $className) {
+    public function __construct(EntityManager $em, $className)
+    {
         $this->em = $em;
         $this->className = $className;
         $this->analyzer = EntityAnalyzer::get($className);
@@ -49,54 +51,61 @@ class Repository {
         $this->hydrater = new Hydrater($this->className, $em);
     }
 
-    private function query($query, $limit = 0) {
+    private function query($query, $limit = 0)
+    {
         $result = $this->em->getClient()->search($query, array_merge($this->columns, array('objectclass')), $limit, $this->baseDn);
         return $this->manage($result);
     }
 
-    public function getHydrater() {
+    public function getHydrater()
+    {
         return $this->hydrater;
     }
 
-    public function getAnalyzer() {
+    public function getAnalyzer()
+    {
         return $this->analyzer;
     }
 
-    public function find($value) {
+    public function find($value)
+    {
         $index = $this->analyzer->getIndex();
-        if($index === false) {
+        if ($index === false) {
             throw new \InvalidArgumentException('The ' . $this->className . ' Entity have no index');
         }
 
         return $this->findOneBy(array($index => $value));
     }
 
-    public function findBy(array $search, $limit = 0) {
+    public function findBy(array $search, $limit = 0)
+    {
         $query = '(&(objectclass=*)';
-        foreach($search as $column => $value) {
-            if(!in_array($column, $this->columns)) {
-                throw new \InvalidArgumentException('No column name ' . $column . '. Column available : ['.implode(',', $this->columns).']');
+        foreach ($search as $column => $value) {
+            if (!in_array($column, $this->columns)) {
+                throw new \InvalidArgumentException('No column name ' . $column . '. Column available : [' . implode(',', $this->columns) . ']');
             }
-            $query .= '('.$column.'='.$value.')';
+            $query .= '(' . $column . '=' . $value . ')';
         }
         $query .= ')';
 
         return $this->query($query, $limit);
     }
 
-    public function findOneBy(array $search) {
+    public function findOneBy(array $search)
+    {
         $res = $this->findBy($search, 1);
-        if(count($res) == 0) {
+        if (count($res) == 0) {
             return false;
         }
         return $res[0];
     }
 
-    public function manage(array $result) {
+    public function manage(array $result)
+    {
         $result = Client::cleanResult($result);
 
         $entities = array();
-        foreach($result as $data) {
+        foreach ($result as $data) {
             $entity = $this->hydrater->hydrate($data['data']);
             $entity->_setDn($data['dn']);
             $entity->_setOriginData($data['data']);
@@ -106,15 +115,17 @@ class Repository {
         return $entities;
     }
 
-    public function read($dn, $limit = 1) {
+    public function read($dn, $limit = 1)
+    {
         $res = $this->manage($this->em->getClient()->read($dn, $this->columns, $limit));
-        if(count($res) == 0) {
+        if (count($res) == 0) {
             return false;
         }
         return $res[0];
     }
 
-    public function getClassName() {
+    public function getClassName()
+    {
         return $this->className;
     }
 }

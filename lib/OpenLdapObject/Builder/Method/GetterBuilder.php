@@ -26,10 +26,12 @@
 namespace OpenLdapObject\Builder\Method;
 
 
-class GetterBuilder extends MethodBuilder {
-    protected static $template = '<space><visibility> function get<column|capitalize>() {<eol><space><space>return $this-><column>;<eol><space>}<eol><eol>';
+class GetterBuilder extends MethodBuilder
+{
+    protected static $template = '<space><visibility> function get<column|capitalize>()<eol><space>{<eol><space><space>return $this-><column>;<eol><space>}<eol><eol>';
 
-    public function getMethodName() {
+    public function getMethodName()
+    {
         return 'get' . Utils::capitalize($this->getProperty());
     }
 }

@@ -37,7 +37,8 @@ use OpenLdapObject\Exception\ConnectionException;
  * @package OpenLdapObject\LdapConnection
  * @author Toshy62 <yoshi62@live.fr>
  */
-class Connection {
+class Connection
+{
     /**
      * @var resource The Ldap connection ressource
      */
@@ -48,12 +49,14 @@ class Connection {
     private $username;
     private $password;
 
-    public function __construct($hostname, $port = 389) {
+    public function __construct($hostname, $port = 389)
+    {
         $this->hostname = $hostname;
         $this->port = $port;
     }
 
-    public function identify($username, $password) {
+    public function identify($username, $password)
+    {
         $this->username = $username;
         $this->password = $password;
     }
@@ -65,18 +68,19 @@ class Connection {
      * @throws \OpenLdapObject\Exception\ConnectionException
      * @throws \OpenLdapObject\Exception\BadIdentificationException
      */
-    public function connect() {
+    public function connect()
+    {
         $this->connect = ldap_connect($this->hostname, $this->port);
 
-        if(!$this->connect) {
+        if (!$this->connect) {
             throw new ConnectionException($this);
         }
 
         // Set Ldap Version to 3
         ldap_set_option($this->connect, LDAP_OPT_PROTOCOL_VERSION, 3);
 
-        if(!is_null($this->username) && !is_null($this->password)) {
-            if(!@ldap_bind($this->connect, $this->username, $this->password)) {
+        if (!is_null($this->username) && !is_null($this->password)) {
+            if (!@ldap_bind($this->connect, $this->username, $this->password)) {
                 throw new BadIdentificationException($this);
             }
         }
@@ -87,21 +91,24 @@ class Connection {
     /**
      * @return string
      */
-    public function getHostname() {
+    public function getHostname()
+    {
         return $this->hostname;
     }
 
     /**
      * @return int
      */
-    public function getPort() {
+    public function getPort()
+    {
         return $this->port;
     }
 
     /**
      * @return string
      */
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->username;
     }
 }

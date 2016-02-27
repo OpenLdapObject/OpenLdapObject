@@ -6,20 +6,23 @@ namespace OpenLdapObject\Tests\LdapClient;
 use OpenLdapObject\LdapClient\Client;
 use OpenLdapObject\LdapClient\Connection;
 
-class ClientTest extends \PHPUnit_Framework_TestCase {
+class ClientTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @var Client
      */
     private $client;
 
-    public function setUp() {
+    public function setUp()
+    {
         $connection = new Connection(LDAP_HOST, LDAP_PORT);
         $connection->identify(LDAP_USER, LDAP_PASSWORD);
 
         $this->client = $connection->connect();
     }
 
-    public function testQuery() {
+    public function testQuery()
+    {
         $this->assertEquals($this->client->search('(&(objectclass=*)(telephoneNumber=03 00 00 00 01))', array('uid')), array(
             'count' => 1,
             0 => array(
@@ -34,7 +37,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         ));
     }
 
-    public function testCleanResult() {
+    public function testCleanResult()
+    {
         $this->assertEquals($this->client->cleanResult(array(
             'count' => 2,
             0 => array(
@@ -71,7 +75,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         ));
     }
 
-    public function testCleanResultMultiLine() {
+    public function testCleanResultMultiLine()
+    {
         $this->assertEquals($this->client->cleanResult(array(
             'count' => 2,
             0 => array(
@@ -121,7 +126,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         ));
     }
 
-    public function testRead() {
+    public function testRead()
+    {
         $this->assertEquals($this->client->read('uid=mdupont,ou=people,dc=example,dc=com', array('uid')), array(
             'count' => 1,
             0 => array(

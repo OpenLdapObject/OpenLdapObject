@@ -9,7 +9,8 @@ use OpenLdapObject\Entity;
  * @OLO\Dn(value="ou=people")
  * @OLO\Entity({"inetOrgPerson", "organizationalPerson", "person", "top"})
  */
-class UncompletPeople extends Entity {
+class UncompletPeople extends Entity
+{
     /**
      * @OLO\Column(type="string")
      * @OLO\Index

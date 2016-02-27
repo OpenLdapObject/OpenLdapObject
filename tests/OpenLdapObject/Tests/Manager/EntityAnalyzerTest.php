@@ -4,24 +4,27 @@ namespace OpenLdapObject\Tests\Manager;
 use OpenLdapObject\Annotations\InvalidAnnotationException;
 use OpenLdapObject\Manager\EntityAnalyzer;
 
-class EntityAnalyzerTest extends \PHPUnit_Framework_TestCase {
+class EntityAnalyzerTest extends \PHPUnit_Framework_TestCase
+{
     /**
      * @var \OpenLdapObject\Manager\EntityAnalyzer
      */
     private $entityAnalyzer;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->entityAnalyzer = EntityAnalyzer::get('OpenLdapObject\Tests\Manager\PeopleTest');
     }
 
-    public function testListField() {
+    public function testListField()
+    {
         $this->assertEquals($this->entityAnalyzer->listColumns(), array(
-            'uid' => array('type' => 'string', 'index' => true, 'strict' => true),
-            'cn' => array('type' => 'string', 'index' => false, 'strict' => true),
-            'sn' => array('type' => 'string', 'index' => false, 'strict' => true),
-            'givenName' => array('type' => 'string', 'index' => false, 'strict' => true),
-            'mail' => array('type' => 'string', 'index' => false, 'strict' => true),
-            'telephoneNumber' => array('type' => 'array', 'index' => false, 'strict' => true)
+                'uid' => array('type' => 'string', 'index' => true, 'strict' => true),
+                'cn' => array('type' => 'string', 'index' => false, 'strict' => true),
+                'sn' => array('type' => 'string', 'index' => false, 'strict' => true),
+                'givenName' => array('type' => 'string', 'index' => false, 'strict' => true),
+                'mail' => array('type' => 'string', 'index' => false, 'strict' => true),
+                'telephoneNumber' => array('type' => 'array', 'index' => false, 'strict' => true)
             )
         );
     }
@@ -29,7 +32,8 @@ class EntityAnalyzerTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException OpenLdapObject\Annotations\InvalidAnnotationException
      */
-    public function testListFieldMultiIndex() {
+    public function testListFieldMultiIndex()
+    {
         $entityWithMultiIndex = EntityAnalyzer::get('OpenLdapObject\Tests\Manager\PeopleMultiIndex');
         $this->assertEquals($entityWithMultiIndex->listColumns(), array(
                 'uid' => array('type' => 'string', 'index' => true),
@@ -42,7 +46,8 @@ class EntityAnalyzerTest extends \PHPUnit_Framework_TestCase {
         );
     }
 
-    public function testGetClassAnnotation() {
+    public function testGetClassAnnotation()
+    {
         $this->assertEquals($this->entityAnalyzer->getClassAnnotation(), array(
                 'dn' => 'ou=people',
                 'objectclass' => array('inetOrgPerson', 'organizationalPerson', 'person', 'top')
@@ -50,11 +55,13 @@ class EntityAnalyzerTest extends \PHPUnit_Framework_TestCase {
         );
     }
 
-    public function testGetBaseDn() {
+    public function testGetBaseDn()
+    {
         $this->assertEquals($this->entityAnalyzer->getBaseDn(), 'ou=people');
     }
 
-    public function testListRequiredMethod() {
+    public function testListRequiredMethod()
+    {
         $this->assertEquals($this->entityAnalyzer->listRequiredMethod(), array(
             'getUid' => array('type' => EntityAnalyzer::GETTER, 'column' => 'uid'),
             'setUid' => array('type' => EntityAnalyzer::SETTER, 'column' => 'uid'),
@@ -72,7 +79,8 @@ class EntityAnalyzerTest extends \PHPUnit_Framework_TestCase {
         ));
     }
 
-    public function testListMissingMethod() {
+    public function testListMissingMethod()
+    {
         $this->assertEquals($this->entityAnalyzer->listMissingMethod(), array(
             'getUid' => array('type' => EntityAnalyzer::GETTER, 'column' => 'uid'),
             'setUid' => array('type' => EntityAnalyzer::SETTER, 'column' => 'uid'),

@@ -35,7 +35,8 @@ use OpenLdapObject\Manager\EntityManager;
 use OpenLdapObject\OpenLdapObject;
 use OpenLdapObject\Utils;
 
-class Hydrater {
+class Hydrater
+{
     /**
      * @var string
      */
@@ -50,7 +51,8 @@ class Hydrater {
      */
     private $em;
 
-    public function __construct($className, EntityManager $em = null) {
+    public function __construct($className, EntityManager $em = null)
+    {
         $this->className = $className;
         $this->analyzer = EntityAnalyzer::get($className);
         $this->em = $em;
@@ -62,61 +64,62 @@ class Hydrater {
      * @return mixed Entity
      * @throws \OpenLdapObject\Exception\InvalidHydrateException
      */
-    public function hydrate(array &$data) {
+    public function hydrate(array &$data)
+    {
         $entity = new $this->className();
         // To fix a bug: Ldap column name is always to lower case
         $column = array();
-        foreach($this->analyzer->listColumns() as $name => $info) {
+        foreach ($this->analyzer->listColumns() as $name => $info) {
             $column[strtolower($name)] = array_merge($info, array('realname' => $name));
         }
 
-        foreach($data as $key => $value) {
+        foreach ($data as $key => $value) {
             $keyLow = strtolower($key);
 
-            if(!array_key_exists($keyLow, $column)) {
-				if($keyLow === 'objectclass') {
-					foreach($value as $objectClass) {
-						if(!$entity->getObjectClass()->contains($objectClass)) $entity->addObjectClass($objectClass);
-					}
-				}
-				continue;
+            if (!array_key_exists($keyLow, $column)) {
+                if ($keyLow === 'objectclass') {
+                    foreach ($value as $objectClass) {
+                        if (!$entity->getObjectClass()->contains($objectClass)) $entity->addObjectClass($objectClass);
+                    }
+                }
+                continue;
             }
 
-            if(is_array($value) && $column[$keyLow]['type'] === 'string') {
-				if(!$column[$keyLow]['strict'] || !OpenLdapObject::isStrict()) {
-					// If is not strict, given the first element of the array
-					$value = reset($value);
-				} else {
-					throw new InvalidHydrateException('Column ' . $key . ' define as a string but data is array');
-				}
+            if (is_array($value) && $column[$keyLow]['type'] === 'string') {
+                if (!$column[$keyLow]['strict'] || !OpenLdapObject::isStrict()) {
+                    // If is not strict, given the first element of the array
+                    $value = reset($value);
+                } else {
+                    throw new InvalidHydrateException('Column ' . $key . ' define as a string but data is array');
+                }
             }
 
-            if($column[$keyLow]['type'] === 'array') {
-               // $method = 'add' . Utils::capitalize($column[$keyLow]['realname']);
-                if(!is_array($value)) {
+            if ($column[$keyLow]['type'] === 'array') {
+                // $method = 'add' . Utils::capitalize($column[$keyLow]['realname']);
+                if (!is_array($value)) {
                     $data[$key] = array($value);
                     $value = array($value);
                 }
-				$property = $this->analyzer->getReflection()->getProperty($column[$keyLow]['realname']);
-				$isAccessible = $property->isPublic();
-				$property->setAccessible(true);
-				$property->setValue($entity, new ArrayCollection($value));
-				if(!$isAccessible) {
-					$property->setAccessible(false);
-				}
-            } elseif($column[$keyLow]['type'] === 'entity') {
+                $property = $this->analyzer->getReflection()->getProperty($column[$keyLow]['realname']);
+                $isAccessible = $property->isPublic();
+                $property->setAccessible(true);
+                $property->setValue($entity, new ArrayCollection($value));
+                if (!$isAccessible) {
+                    $property->setAccessible(false);
+                }
+            } elseif ($column[$keyLow]['type'] === 'entity') {
                 $multi = $this->analyzer->isEntityRelationMultiple($column[$keyLow]['realname']);
-                if($multi) {
+                if ($multi) {
                     $property = $this->analyzer->getReflection()->getProperty($column[$keyLow]['realname']);
                     $isAccessible = $property->isPublic();
                     $property->setAccessible(true);
                     // Manage multi entity but only one
-                    if(!is_array($value)) {
+                    if (!is_array($value)) {
                         $data[$key] = array($value);
                         $value = array($value);
                     }
                     $property->setValue($entity, new EntityCollection(EntityCollection::DN, $this->em->getRepository($column[$keyLow]['relation']['classname']), $value, array('ignore_errors' => $column[$keyLow]['relation']['ignore_errors'])));
-                    if(!$isAccessible) {
+                    if (!$isAccessible) {
                         $property->setAccessible(false);
                     }
                 } else {
@@ -137,56 +140,59 @@ class Hydrater {
      * @param $entity
      * @return array
      */
-    public function getData(Entity $entity) {
+    public function getData(Entity $entity)
+    {
         $column = $this->analyzer->listColumns();
         $data = array();
 
-        foreach($column as $key => $value) {
+        foreach ($column as $key => $value) {
             $method = 'get' . Utils::capitalize($key);
             $data[$key] = $entity->$method();
-            if(is_null($data[$key])) $data[$key] = array();
-			if($data[$key] instanceof ArrayCollection) $data[$key] = $data[$key]->toArray();
+            if (is_null($data[$key])) $data[$key] = array();
+            if ($data[$key] instanceof ArrayCollection) $data[$key] = $data[$key]->toArray();
         }
 
-		$data['objectclass'] = $entity->getObjectClass()->toArray();
+        $data['objectclass'] = $entity->getObjectClass()->toArray();
 
         return $data;
     }
 
-	public function defineCollection(Entity $entity) {
-		foreach($this->analyzer->listColumns() as $name => $info) {
-			switch($info['type']) {
-				case 'array':
-					$value = new ArrayCollection();
-					break;
-				case 'entity':
-					if($info['relation']['multi']) {
-						$value = new EntityCollection(EntityCollection::DN, $info['relation']['classname'], array(), array('ignore_errors' => $info['relation']['ignore_errors']));
-					} else {
-						$value = null;
-					}
-					break;
-				default:
-					$value = null;
-			}
-			if(!is_null($value)) {
-				$property = $this->analyzer->getReflection()->getProperty($name);
-				$isAccessible = $property->isPublic();
-				$property->setAccessible(true);
-				$property->setValue($entity, $value);
-				if(!$isAccessible) {
-					$property->setAccessible(false);
-				}
-			}
-		}
-	}
+    public function defineCollection(Entity $entity)
+    {
+        foreach ($this->analyzer->listColumns() as $name => $info) {
+            switch ($info['type']) {
+                case 'array':
+                    $value = new ArrayCollection();
+                    break;
+                case 'entity':
+                    if ($info['relation']['multi']) {
+                        $value = new EntityCollection(EntityCollection::DN, $info['relation']['classname'], array(), array('ignore_errors' => $info['relation']['ignore_errors']));
+                    } else {
+                        $value = null;
+                    }
+                    break;
+                default:
+                    $value = null;
+            }
+            if (!is_null($value)) {
+                $property = $this->analyzer->getReflection()->getProperty($name);
+                $isAccessible = $property->isPublic();
+                $property->setAccessible(true);
+                $property->setValue($entity, $value);
+                if (!$isAccessible) {
+                    $property->setAccessible(false);
+                }
+            }
+        }
+    }
 
-	public function defineObjectClass(Entity $entity) {
-		$classAnnotation = $this->analyzer->getClassAnnotation();
-		foreach($classAnnotation['objectclass'] as $objectClass) {
-			$entity->addObjectClass($objectClass);
-		}
-	}
+    public function defineObjectClass(Entity $entity)
+    {
+        $classAnnotation = $this->analyzer->getClassAnnotation();
+        foreach ($classAnnotation['objectclass'] as $objectClass) {
+            $entity->addObjectClass($objectClass);
+        }
+    }
 }
 
 ?>

@@ -10,7 +10,8 @@ use OpenLdapObject\Annotations as OLO;
  * @OLO\Dn(value="ou=organisation")
  * @OLO\Entity({"groupOfNames", "top"})
  */
-class OrganisationBadRelation extends Entity {
+class OrganisationBadRelation extends Entity
+{
     /**
      * @OLO\Column(type="string")
      * @OLO\Index
@@ -24,25 +25,30 @@ class OrganisationBadRelation extends Entity {
      */
     private $member;
 
-    public function getCn() {
+    public function getCn()
+    {
         return $this->cn;
     }
 
-    public function setCn($value) {
+    public function setCn($value)
+    {
         $this->cn = $value;
         return $this;
     }
 
-    public function getMember() {
+    public function getMember()
+    {
         return $this->member;
     }
 
-    public function addMember($value) {
+    public function addMember($value)
+    {
         $this->member->add($value);
         return $this;
     }
 
-    public function removeMember($value) {
+    public function removeMember($value)
+    {
         $this->member->removeElement($value);
         return $this;
     }

@@ -26,10 +26,12 @@
 namespace OpenLdapObject\Builder\Method;
 
 
-class RemoverBuilder extends MethodBuilder {
-    protected static $template = '<space><visibility> function remove<column|capitalize>($value) {<eol><space><space>$this-><column>->removeElement($value);<eol><space><space>return $this;<eol><space>}<eol><eol>';
+class RemoverBuilder extends MethodBuilder
+{
+    protected static $template = '<space><visibility> function remove<column|capitalize>($value)<eol><space>{<eol><space><space>$this-><column>->removeElement($value);<eol><space><space>return $this;<eol><space>}<eol><eol>';
 
-    public function getMethodName() {
+    public function getMethodName()
+    {
         return 'remove' . Utils::capitalize($this->getProperty());
     }
 }

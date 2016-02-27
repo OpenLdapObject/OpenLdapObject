@@ -25,6 +25,7 @@
  */
 
 namespace OpenLdapObject\LdapClient;
+
 use OpenLdapObject\Exception\LdapException;
 
 /**
@@ -35,55 +36,62 @@ use OpenLdapObject\Exception\LdapException;
  * @package OpenLdapObject\LdapConnection
  * @author Toshy62 <yoshi62@live.fr>
  */
-class Client {
+class Client
+{
     private $connect;
     private $baseDn;
 
-    public function __construct($ldapConnect) {
+    public function __construct($ldapConnect)
+    {
         $this->connect = $ldapConnect;
     }
 
-    public function setBaseDn($baseDn) {
+    public function setBaseDn($baseDn)
+    {
         $this->baseDn = $baseDn;
     }
 
-    public function getBaseDn() {
+    public function getBaseDn()
+    {
         return $this->baseDn;
     }
-    
-    public function getConnect() {
+
+    public function getConnect()
+    {
         return $this->connect;
     }
 
-    public function search($filter, array $attributes = array('*'), $limit = 0, $overloadDn = null) {
+    public function search($filter, array $attributes = array('*'), $limit = 0, $overloadDn = null)
+    {
         $baseDn = '';
-        if(!is_null($overloadDn)) {
+        if (!is_null($overloadDn)) {
             $baseDn = $overloadDn . (!is_null($this->baseDn) ? ',' . $this->baseDn : '');
         } else {
-            if(!is_null($this->baseDn)) {
+            if (!is_null($this->baseDn)) {
                 $baseDn = $this->baseDn;
             }
         }
         $result = @ldap_search($this->connect, $baseDn, $filter, $attributes, 0, $limit);
-        if(!$result) {
+        if (!$result) {
             echo ldap_error($this->connect);
             return false;
         }
         return ldap_get_entries($this->connect, $result);
     }
 
-    public static function cleanResult($input) {
+    public static function cleanResult($input)
+    {
         $output = array();
-        for($nbEntry = 0; $nbEntry < $input['count']; $nbEntry++) {
+        for ($nbEntry = 0; $nbEntry < $input['count']; $nbEntry++) {
             $entry = array();
             $entry['dn'] = $input[$nbEntry]['dn'];
             $entry['data'] = array();
-            for($nbField = 0; $nbField < $input[$nbEntry]['count']; $nbField++) {
-                if($input[$nbEntry][$input[$nbEntry][$nbField]]['count'] == 1) {
+            for ($nbField = 0; $nbField < $input[$nbEntry]['count']; $nbField++) {
+                if ($input[$nbEntry][$input[$nbEntry][$nbField]]['count'] == 1) {
                     $content = $input[$nbEntry][$input[$nbEntry][$nbField]][0];
                 } else {
                     $content = array();
-                    for($number = 0; $number < $input[$nbEntry][$input[$nbEntry][$nbField]]['count']; $number++) {
+                    for ($number = 0; $number < $input[$nbEntry][$input[$nbEntry][$nbField]]['count']; $number++) {
                         $content[] = $input[$nbEntry][$input[$nbEntry][$nbField]][$number];
                     }
                 }
@@ -95,50 +103,56 @@ class Client {
         return $output;
     }
 
-    public function __destruct() {
-        if(is_resource($this->connect)) {
+    public function __destruct()
+    {
+        if (is_resource($this->connect)) {
             ldap_close($this->connect);
         }
     }
 
-    public function create($dn, $content) {
-        if(!@ldap_add($this->connect, $dn, $content)) {
+    public function create($dn, $content)
+    {
+        if (!@ldap_add($this->connect, $dn, $content)) {
             throw new LdapException(ldap_error($this->connect));
             return false;
         }
         return true;
     }
 
-    public function delete($dn) {
-        if(!@ldap_delete($this->connect, $dn)) {
-			throw new LdapException(ldap_error($this->connect));
+    public function delete($dn)
+    {
+        if (!@ldap_delete($this->connect, $dn)) {
+            throw new LdapException(ldap_error($this->connect));
             return false;
         }
         return true;
     }
 
-    public function rename($oldDn, $newDn) {
+    public function rename($oldDn, $newDn)
+    {
         $parent = explode(',', $oldDn);
         unset($parent[0]);
         $parentDn = implode(',', $parent);
-        if(!@ldap_rename($this->connect, $oldDn, $newDn, $parentDn, true)) {
-			throw new LdapException(ldap_error($this->connect));
+        if (!@ldap_rename($this->connect, $oldDn, $newDn, $parentDn, true)) {
+            throw new LdapException(ldap_error($this->connect));
             return false;
         }
         return true;
     }
 
-    public function update($dn, $data) {
-        if(!@ldap_modify($this->connect, $dn, $data)) {
-			throw new LdapException(ldap_error($this->connect));
+    public function update($dn, $data)
+    {
+        if (!@ldap_modify($this->connect, $dn, $data)) {
+            throw new LdapException(ldap_error($this->connect));
             return false;
         }
         return true;
     }
 
-    public function read($dn, array $attributes = array('*'), $limit = 1) {
+    public function read($dn, array $attributes = array('*'), $limit = 1)
+    {
         $res = @ldap_read($this->connect, $dn, "(objectclass=*)", $attributes, null, $limit);
-        if(is_bool($res)) {
+        if (is_bool($res)) {
             return array('count' => 0);
         }
         return ldap_get_entries($this->connect, $res);

@@ -28,7 +28,8 @@
 namespace OpenLdapObject\Collection;
 
 
-class EntityIterator implements \Iterator {
+class EntityIterator implements \Iterator
+{
     /**
      * @var EntityCollection
      */
@@ -36,7 +37,8 @@ class EntityIterator implements \Iterator {
 
     private $current = 0;
 
-    public function __construct(EntityCollection $collection) {
+    public function __construct(EntityCollection $collection)
+    {
         $this->collection = $collection;
     }
 
@@ -46,7 +48,8 @@ class EntityIterator implements \Iterator {
      * @link http://php.net/manual/en/iterator.current.php
      * @return mixed Can return any type.
      */
-    public function current() {
+    public function current()
+    {
         return $this->collection->offsetGet($this->current);
     }
 
@@ -56,7 +59,8 @@ class EntityIterator implements \Iterator {
      * @link http://php.net/manual/en/iterator.next.php
      * @return void Any returned value is ignored.
      */
-    public function next() {
+    public function next()
+    {
         $this->current++;
     }
 
@@ -66,7 +70,8 @@ class EntityIterator implements \Iterator {
      * @link http://php.net/manual/en/iterator.key.php
      * @return mixed scalar on success, or null on failure.
      */
-    public function key() {
+    public function key()
+    {
         return $this->current;
     }
 
@@ -77,7 +82,8 @@ class EntityIterator implements \Iterator {
      * @return boolean The return value will be casted to boolean and then evaluated.
      * Returns true on success or false on failure.
      */
-    public function valid() {
+    public function valid()
+    {
         return $this->collection->offsetExists($this->current);
     }
 
@@ -87,7 +93,8 @@ class EntityIterator implements \Iterator {
      * @link http://php.net/manual/en/iterator.rewind.php
      * @return void Any returned value is ignored.
      */
-    public function rewind() {
+    public function rewind()
+    {
         $this->current = 0;
     }
 

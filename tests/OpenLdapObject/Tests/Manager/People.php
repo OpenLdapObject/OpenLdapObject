@@ -9,7 +9,8 @@ use OpenLdapObject\Entity;
  * @OLO\Dn(value="ou=people")
  * @OLO\Entity({"inetOrgPerson", "organizationalPerson", "person", "top"})
  */
-class People extends Entity {
+class People extends Entity
+{
     /**
      * @OLO\Column(type="string")
      * @OLO\Index
@@ -41,61 +42,74 @@ class People extends Entity {
      */
     private $telephoneNumber;
 
-    public function getUid() {
+    public function getUid()
+    {
         return $this->uid;
     }
 
-    public function setUid($value) {
+    public function setUid($value)
+    {
         $this->uid = $value;
         return $this;
     }
 
-    public function getCn() {
+    public function getCn()
+    {
         return $this->cn;
     }
 
-    public function setCn($value) {
+    public function setCn($value)
+    {
         $this->cn = $value;
         return $this;
     }
 
-    public function getSn() {
+    public function getSn()
+    {
         return $this->sn;
     }
 
-    public function setSn($value) {
+    public function setSn($value)
+    {
         $this->sn = $value;
         return $this;
     }
 
-    public function getGivenName() {
+    public function getGivenName()
+    {
         return $this->givenName;
     }
 
-    public function setGivenName($value) {
+    public function setGivenName($value)
+    {
         $this->givenName = $value;
         return $this;
     }
 
-    public function getMail() {
+    public function getMail()
+    {
         return $this->mail;
     }
 
-    public function setMail($value) {
+    public function setMail($value)
+    {
         $this->mail = $value;
         return $this;
     }
 
-    public function getTelephoneNumber() {
+    public function getTelephoneNumber()
+    {
         return $this->telephoneNumber;
     }
 
-    public function addTelephoneNumber($value) {
+    public function addTelephoneNumber($value)
+    {
         $this->telephoneNumber->add($value);
         return $this;
     }
 
-    public function removeTelephoneNumber($value) {
+    public function removeTelephoneNumber($value)
+    {
         $this->telephoneNumber->removeElement($value);
         return $this;
     }

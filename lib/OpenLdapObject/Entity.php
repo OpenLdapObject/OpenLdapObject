@@ -25,6 +25,7 @@
  */
 
 namespace OpenLdapObject;
+
 use OpenLdapObject\Collection\ArrayCollection;
 use OpenLdapObject\Manager\EntityCollection;
 use OpenLdapObject\Manager\Hydrate\Hydrater;
@@ -33,50 +34,59 @@ use OpenLdapObject\Manager\Hydrate\Hydrater;
  * Class Entity
  * @package OpenLdapObject
  */
-abstract class Entity {
+abstract class Entity
+{
     private $_dn;
     private $_originData;
 
-	/**
-	 * @var ArrayCollection
-	 */
-	private $objectClass;
+    /**
+     * @var ArrayCollection
+     */
+    private $objectClass;
 
-	public function __construct() {
-		$this->objectClass = new ArrayCollection();
+    public function __construct()
+    {
+        $this->objectClass = new ArrayCollection();
 
-		$hydrater = new Hydrater(get_class($this));
-		$hydrater->defineCollection($this);
-		$hydrater->defineObjectClass($this);
-	}
+        $hydrater = new Hydrater(get_class($this));
+        $hydrater->defineCollection($this);
+        $hydrater->defineObjectClass($this);
+    }
 
-    public final function _setDn($dn) {
+    public final function _setDn($dn)
+    {
         $this->_dn = $dn;
     }
 
-    public final function _getDn() {
+    public final function _getDn()
+    {
         return $this->_dn;
     }
 
-    public final function _setOriginData(array $originData) {
+    public final function _setOriginData(array $originData)
+    {
         $this->_originData = $originData;
     }
 
-    public final function _getOriginData() {
+    public final function _getOriginData()
+    {
         return $this->_originData;
     }
 
-	public function getObjectClass() {
-		return $this->objectClass;
-	}
+    public function getObjectClass()
+    {
+        return $this->objectClass;
+    }
 
-	public function addObjectClass($objectClass) {
-		$this->objectClass->add($objectClass);
-		return $this;
-	}
+    public function addObjectClass($objectClass)
+    {
+        $this->objectClass->add($objectClass);
+        return $this;
+    }
 
-	public function removeObjectClass($objectClass) {
-		$this->objectClass->remove($objectClass);
-		return $this;
-	}
+    public function removeObjectClass($objectClass)
+    {
+        $this->objectClass->remove($objectClass);
+        return $this;
+    }
 } 
