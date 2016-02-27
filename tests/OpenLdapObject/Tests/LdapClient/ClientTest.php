@@ -144,31 +144,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
     public function testComplexeQuery()
     {
-        $this->assertEquals($this->client->search('(&(objectclass=*)(|(telephoneNumber=03 00 00 00 01)(telephoneNumber=03 00 00 00 00)))', array('uid')), array(
-            'count' => 2,
-            0 =>
-                array(
-                    'uid' =>
-                        array(
-                            'count' => 1,
-                            0 => 'pdeparis',
-                        ),
-                    0 => 'uid',
-                    'count' => 1,
-                    'dn' => 'uid=pdeparis,ou=people,dc=example,dc=com',
-                ),
-            1 =>
-                array(
-                    'uid' =>
-                        array(
-                            'count' => 1,
-                            0 => 'mdupont',
-                        ),
-                    0 => 'uid',
-                    'count' => 1,
-                    'dn' => 'uid=mdupont,ou=people,dc=example,dc=com',
-                ),
-        ));
+        $search = $this->client->search('(&(objectclass=*)(|(telephoneNumber=03 00 00 00 01)(telephoneNumber=03 00 00 00 00)))', array('uid'));
+        $this->assertEquals($search['count'], 2);
     }
 }
  
