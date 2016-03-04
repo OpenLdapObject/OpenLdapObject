@@ -34,12 +34,14 @@ class Condition
     private $key;
     private $value;
     private $not;
+    private $approx;
 
-    public function __construct($key, $value, $not = false)
+    public function __construct($key, $value, $not = false, $approx = false)
     {
         $this->key = $key;
         $this->value = $value;
         $this->not = $not;
+        $this->approx = $approx;
     }
 
     public function getQueryForRepository(Repository $repository)
@@ -48,6 +50,6 @@ class Condition
         if (!array_key_exists($this->key, $columns)) {
             throw new \InvalidArgumentException('No column name ' . $this->key . '. Column available : [' . implode(',', array_keys($columns)) . ']');
         }
-        return ($this->not ? '!' : '') . '(' . $this->key . '=' . $this->value . ')';
+        return ($this->not ? '!' : '') . '(' . $this->key . ($this->approx ? '~' : '') . '=' . $this->value . ')';
     }
 }
