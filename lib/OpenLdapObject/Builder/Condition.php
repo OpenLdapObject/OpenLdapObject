@@ -26,7 +26,7 @@
 
 namespace OpenLdapObject\Builder;
 
-
+use OpenLdapObject\Exception\BadConditionException;
 use OpenLdapObject\Manager\Repository;
 
 class Condition
@@ -34,14 +34,19 @@ class Condition
     private $key;
     private $value;
     private $not;
-    private $approx;
+    private $conditionOperator;
+    const CEQUALS = 0, CDIFFERENT = 1, CLOWER = 2, CLOWEREQUALS = 3, CGREATER = 4, CGREATEREQUALS = 5, CAPPROX = 6;    
+    private static $operator = [Condition::CEQUALS => '=', Condition::CDIFFERENT => '!=', Condition::CLOWER => '<', Condition::CLOWEREQUALS => '<=', Condition::CGREATER => '>', Condition::CGREATEREQUALS => '>=', Condition::CAPPROX => '~='];
 
     public function __construct($key, $value, $not = false, $approx = false)
     {
         $this->key = $key;
         $this->value = $value;
         $this->not = $not;
-        $this->approx = $approx;
+        if (!array_key_exists($operator, self::$operator)) {
+            throw new BadConditionException('Bad operator');
+        }
+        $this->conditionOperator = $operator;
     }
 
     public function getQueryForRepository(Repository $repository)
@@ -50,6 +55,6 @@ class Condition
         if (!array_key_exists($this->key, $columns)) {
             throw new \InvalidArgumentException('No column name ' . $this->key . '. Column available : [' . implode(',', array_keys($columns)) . ']');
         }
-        return ($this->not ? '!' : '') . '(' . $this->key . ($this->approx ? '~' : '') . '=' . $this->value . ')';
+        return ($this->not ? '!' : '') . '(' . $this->key . self::$operator[$this->conditionOperator] . $this->value . ')';
     }
 }
