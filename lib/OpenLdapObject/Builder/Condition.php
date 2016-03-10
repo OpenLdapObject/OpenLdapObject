@@ -38,7 +38,7 @@ class Condition
     const CEQUALS = 0, CDIFFERENT = 1, CLOWER = 2, CLOWEREQUALS = 3, CGREATER = 4, CGREATEREQUALS = 5, CAPPROX = 6;    
     private static $operator = [Condition::CEQUALS => '=', Condition::CDIFFERENT => '!=', Condition::CLOWER => '<', Condition::CLOWEREQUALS => '<=', Condition::CGREATER => '>', Condition::CGREATEREQUALS => '>=', Condition::CAPPROX => '~='];
 
-    public function __construct($key, $value, $not = false, $approx = false)
+    public function __construct($key, $value, $not = false, $operator = 0)
     {
         $this->key = $key;
         $this->value = $value;
