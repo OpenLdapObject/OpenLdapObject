@@ -36,15 +36,6 @@ namespace OpenLdapObject;
 abstract class OpenLdapObject
 {
     /**
-     * ID Version
-     */
-    const VERSION = '1.1.0dev';
-    /**
-     * Release Date
-     */
-    const DATE = '31/03/2015';
-
-    /**
      * True if the global strict mode is enable
      * @var bool enable/disable
      */
