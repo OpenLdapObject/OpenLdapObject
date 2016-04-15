@@ -37,7 +37,10 @@ abstract class AnnotationManager
     {
         if (!self::$annotationIsLoad) {
             foreach (self::$annotationList as $annotation) {
-                spl_autoload_call(self::$annotationPackage . $annotation);
+                $className = self::$annotationPackage . $annotation
+                if(!class_exists($className)) {
+                    spl_autoload_call($className);
+                }
             }
 
             self::$annotationIsLoad = true;
