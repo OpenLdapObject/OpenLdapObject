@@ -55,6 +55,11 @@ class Condition
         if (!array_key_exists($this->key, $columns)) {
             throw new \InvalidArgumentException('No column name ' . $this->key . '. Column available : [' . implode(',', array_keys($columns)) . ']');
         }
-        return ($this->not ? '!' : '') . '(' . $this->key . self::$operator[$this->conditionOperator] . $this->value . ')';
+        //return ($this->not ? '!' : '') . '(' . $this->key . self::$operator[$this->conditionOperator] . $this->value . ')';
+	if($this->not) {
+            return '(!' . '(' . $this->key . self::$operator[$this->conditionOperator] . $this->value . '))';
+        } else {
+            return '(' . $this->key . self::$operator[$this->conditionOperator] . $this->value . ')';           
+        }
     }
 }
