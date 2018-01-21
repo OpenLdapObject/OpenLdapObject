@@ -27,7 +27,8 @@
     }
   },
   "require": {
-    "php": ">=5.4.0",
+    "php": ">=7.1.3",
+    "symfony/framework-bundle": "~4.0",
     "ext-ldap": "*",
     "doctrine/annotations": "~1.0",
     "ulrichsg/getopt-php": "2.3.*"
