@@ -1,6 +1,6 @@
 {
   "name": "openldapobject/openldapobject",
-  "type": "library",
+  "type": "symfony-bundle",
   "keywords": [
     "openldap",
     "ldap",
