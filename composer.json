@@ -25,9 +25,8 @@
     "source": "https://github.com/OpenLdapObject/OpenLdapObject"
   },
   "autoload": {
-    "psr-0": {
-      "OpenLdapObject\\": "lib/",
-      "OpenLdapObject\\Tests": "tests/"
+    "psr-4": {
+      "OpenLdapObject\\": "lib/OpenLdapObject/"
     }
   },
   "require": {
