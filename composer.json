@@ -32,7 +32,7 @@
   "require": {
     "php": ">=5.4.0",
     "ext-ldap": "*",
-    "doctrine/annotations": "~1.0",
+    "doctrine/annotations": "~1.0 || ~2.0",
     "ulrichsg/getopt-php": "2.3.*"
   },
   "require-dev": {
